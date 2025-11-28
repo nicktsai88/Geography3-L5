@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌏 社會科大冒險 - 闖關版</title>
+    <title>🌏 社會科大冒險 - 東北亞篇</title>
     <link href="https://fonts.googleapis.com/css2?family=CwTeXYen:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
@@ -25,82 +25,79 @@
             padding: 20px; 
             background-color: var(--bg-color); 
             color: var(--text-color);
+            /* 預設背景，若有 map_bg.jpg 會被覆蓋 */
             background-image: radial-gradient(#FFD166 2px, transparent 2px);
             background-size: 30px 30px; 
+            min-height: 100vh;
         }
 
-        h1, h2, h3 { color: #D35400; text-align: center; margin-top: 0; }
-        
+        h1, h2, h3 { color: #D35400; text-align: center; margin-top: 0; text-shadow: 2px 2px 0px white; }
         h1 { font-size: 2.5em; }
-        h2 { font-size: 2em; }
-
+        
         .quiz-container { 
-            background: white; 
+            background: rgba(255, 255, 255, 0.95); /* 微微透明讓背景透出來 */
             padding: 30px; 
-            border-radius: 20px; 
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1); 
-            border: 3px solid var(--primary-color);
+            border-radius: 25px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
+            border: 4px solid var(--primary-color);
             position: relative;
             overflow: hidden;
-            min-height: 400px;
+            min-height: 500px;
         }
 
+        /* 按鈕樣式 */
         .btn {
             background-color: var(--primary-color); color: white; border: none;
-            padding: 12px 25px; font-size: 1.3em; 
-            border-radius: 50px;
-            cursor: pointer; transition: 0.3s; box-shadow: 0 4px 0 #E67E22;
-            font-family: inherit; font-weight: bold; margin: 8px; display: inline-block;
+            padding: 12px 25px; font-size: 1.3em; border-radius: 50px;
+            cursor: pointer; transition: 0.3s; box-shadow: 0 5px 0 #E67E22;
+            font-family: inherit; font-weight: bold; margin: 10px; display: inline-block;
         }
-        .btn:hover { transform: translateY(-2px); }
+        .btn:hover { transform: translateY(-3px); }
         .btn:active { transform: translateY(2px); box-shadow: none; }
-        .btn-green { background-color: var(--correct-color); box-shadow: 0 4px 0 #27AE60; }
-        .btn-red { background-color: var(--accent-color); box-shadow: 0 4px 0 #C0392B; }
-        .btn-gray { background-color: #95a5a6; box-shadow: 0 4px 0 #7f8c8d; }
-        .btn-sm { padding: 8px 16px; font-size: 1em; margin: 0 2px; }
+        .btn-green { background-color: var(--correct-color); box-shadow: 0 5px 0 #27AE60; }
+        .btn-red { background-color: var(--accent-color); box-shadow: 0 5px 0 #C0392B; }
+        .btn-gray { background-color: #95a5a6; box-shadow: 0 5px 0 #7f8c8d; }
+        .btn-sm { padding: 8px 16px; font-size: 1em; margin: 0 2px; box-shadow: 0 3px 0 #bdc3c7;}
 
         input[type="text"] {
             padding: 12px; font-size: 1.5em; 
-            border: 2px solid var(--primary-color);
-            border-radius: 10px; margin: 15px; font-family: inherit; text-align: center; width: 80%;
+            border: 3px solid var(--primary-color);
+            border-radius: 15px; margin: 15px; font-family: inherit; text-align: center; width: 80%;
         }
 
-        /* 音樂播放器樣式 */
-        .music-player {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 2px solid var(--primary-color);
-            border-radius: 30px;
-            padding: 5px 15px;
+        /* --- 關卡地圖樣式 (重頭戲) --- */
+        #level-screen {
+            /* 這裡設定地圖背景，請確保 images 資料夾有 map_bg.jpg */
+            background-image: url('images/map_bg.jpg'); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 15px;
+            padding: 20px;
+            min-height: 400px;
+        }
+
+        .level-path {
             display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             align-items: center;
-            gap: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            z-index: 100;
-        }
-        .music-btn {
-            background: none; border: none; font-size: 1.5em; cursor: pointer; padding: 0; color: var(--primary-color);
-        }
-        .music-btn:hover { transform: scale(1.1); }
-        .volume-slider {
-            width: 80px; accent-color: var(--primary-color); cursor: pointer;
-        }
-
-        /* 關卡選單樣式 */
-        .level-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
-            gap: 15px;
+            gap: 20px;
             margin: 20px 0;
         }
+
+        .level-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
         .level-btn {
             background-color: white;
-            border: 3px solid var(--primary-color);
-            border-radius: 15px;
-            padding: 15px;
-            font-size: 1.3em; 
+            border: 4px solid var(--primary-color);
+            border-radius: 50%; /* 圓形關卡按鈕 */
+            width: 110px;
+            height: 110px;
+            font-size: 1.1em;
             cursor: pointer;
             transition: 0.2s;
             color: var(--primary-color);
@@ -108,48 +105,41 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 120px; 
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 2;
         }
-        .level-title {
-            white-space: nowrap; 
-            margin-bottom: 8px;
+        .level-title { 
+            white-space: nowrap; font-weight: bold; margin-bottom: 5px;
         }
         .level-btn:hover:not(:disabled) {
-            background-color: #FFF0D4;
-            transform: scale(1.05);
+            background-color: #FFF0D4; transform: scale(1.1) rotate(3deg);
         }
         .level-btn:disabled {
-            background-color: #eee;
-            border-color: var(--locked-color);
-            color: var(--locked-color);
-            cursor: not-allowed;
+            background-color: #e0e0e0; border-color: var(--locked-color);
+            color: var(--locked-color); cursor: not-allowed;
         }
-        .level-score {
-            font-size: 0.8em;
-            color: var(--correct-color);
-            font-weight: bold;
+        
+        /* 箭頭樣式 */
+        .arrow-icon {
+            font-size: 2em;
+            color: var(--primary-color);
+            margin: 0 5px;
+            text-shadow: 1px 1px 0 white;
+            animation: bounce 2s infinite;
         }
-
-        /* 進度條 */
-        .progress-container {
-            width: 100%; background-color: #eee; border-radius: 10px; margin: 15px 0; height: 25px; 
-            overflow: hidden;
-        }
-        .progress-bar {
-            height: 100%; background-color: var(--correct-color); width: 0%; transition: width 0.3s ease;
+        @keyframes bounce {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(5px); }
         }
 
-        /* 題目樣式 */
+        /* 題目與選項大字體 */
         .question-box { 
             background-color: #FFF9F0; 
             border-left: 8px solid var(--accent-color);
             padding: 25px; margin-bottom: 25px; border-radius: 15px;
         }
-        .question-text { 
-            font-size: 1.8em; 
-            font-weight: 600; 
-            line-height: 1.6; 
-        }
+        .question-text { font-size: 1.8em; font-weight: 600; line-height: 1.6; }
         .question-img { 
             max-width: 100%; max-height: 400px; display: block; 
             margin: 20px auto; border: 4px solid white; 
@@ -159,45 +149,45 @@
         .option-btn { 
             width: 100%; padding: 20px; margin: 12px 0; text-align: left; 
             background: white; border: 3px solid #FFE4B5; border-radius: 20px; 
-            cursor: pointer; transition: 0.2s; 
-            font-size: 1.5em; 
+            cursor: pointer; transition: 0.2s; font-size: 1.5em; line-height: 1.4;
             font-family: inherit; position: relative;
-            line-height: 1.4;
         }
         .option-btn:hover { background-color: #FFF0D4; border-color: var(--primary-color); }
         .correct { background-color: #D4EDDA !important; border-color: var(--correct-color) !important; color: #155724; }
         .wrong { background-color: #F8D7DA !important; border-color: var(--wrong-color) !important; color: #721C24; }
 
-        /* 解析與複習 */
+        /* 進度條 */
+        .progress-container { width: 100%; background-color: #eee; border-radius: 10px; margin: 15px 0; height: 25px; overflow: hidden; }
+        .progress-bar { height: 100%; background-color: var(--correct-color); width: 0%; transition: width 0.3s ease; }
+
+        /* 其他介面 */
         .explanation-box, .review-item {
             margin-top: 20px; padding: 20px; background-color: #E8F6F3;
             border: 3px dashed #1ABC9C; border-radius: 15px; 
-            color: #0E6251; font-size: 1.3em; 
-            text-align: left; line-height: 1.6;
+            color: #0E6251; font-size: 1.3em; text-align: left; line-height: 1.6;
         }
         .review-list { list-style: none; padding: 0; }
         .review-item { margin-bottom: 25px; background: white; border: 2px solid #eee; }
         .tag { padding: 4px 10px; border-radius: 5px; font-size: 0.8em; color: white; margin-right: 8px; vertical-align: middle;}
         .tag-correct { background-color: var(--correct-color); }
         .tag-wrong { background-color: var(--wrong-color); }
-
-        /* 歷史紀錄列表 */
         #history-list { list-style: none; padding: 0; }
         #history-list li { 
-            background: white; margin: 15px 0; padding: 20px; 
-            border-radius: 20px; border: 2px solid #eee; display: flex; 
-            justify-content: space-between; align-items: center;
-            flex-wrap: wrap; font-size: 1.2em;
+            background: white; margin: 15px 0; padding: 20px; border-radius: 20px; 
+            border: 2px solid #eee; display: flex; justify-content: space-between; 
+            align-items: center; flex-wrap: wrap; font-size: 1.2em;
         }
-        .history-info { flex-grow: 1; text-align: left; }
-        .history-actions { display: flex; gap: 10px; }
     </style>
 </head>
 <body>
 
     <div class="quiz-container">
+        <audio id="bgm" loop>
+            <source src="sounds/bgm.mp3" type="audio/mpeg">
+        </audio>
+
         <div id="welcome-screen">
-            <h1>🎒 地理第3冊-東北亞的自然環境</h1>
+            <h1>🎒 社會科大冒險</h1>
             <div style="font-size: 5em; margin: 30px;">🌏✨🇯🇵🇰🇷</div>
             <p style="font-size: 1.5em;">請輸入你的名字來開始冒險！</p>
             <input type="text" id="username" placeholder="你的名字是..." />
@@ -206,33 +196,32 @@
         </div>
 
         <div id="level-screen" style="display: none; text-align: center;">
-            <h2>🗺️ 選擇關卡</h2>
-            <p style="font-size: 1.3em;">嗨，<span id="display-name" style="color:var(--primary-color); font-weight:bold;"></span>！準備好挑戰哪一關？</p>
-            <div id="level-grid" class="level-grid"></div>
+            <div style="background: rgba(255,255,255,0.8); padding:10px; border-radius:10px; display:inline-block; margin-bottom:10px;">
+                <h2 style="margin:0;">🗺️ 東北亞探險地圖</h2>
+                <p style="font-size: 1.2em; margin:5px;">冒險家：<span id="display-name" style="color:var(--primary-color); font-weight:bold;"></span></p>
+            </div>
             
-            <div style="margin-top: 30px;">
+            <div id="level-path" class="level-path"></div>
+            
+            <div style="margin-top: 20px; background: rgba(255,255,255,0.9); padding:10px; border-radius:15px;">
                 <button id="btn-mistake" class="btn btn-red" onclick="startQuiz('mistake')" style="display:none;">📕 挑戰錯題本 (<span id="mistake-count">0</span>)</button>
                 <button class="btn btn-green" onclick="showHistory()">📜 查看紀錄</button>
                 <button class="btn btn-gray" onclick="logout()">🚪 登出</button>
+                <button id="music-btn" class="btn btn-sm" onclick="toggleMusic()" style="background:#3498db;">🔊 音樂開關</button>
             </div>
         </div>
 
         <div id="quiz-content" style="display: none;">
-            <div class="music-player">
-                <button id="play-pause-btn" class="music-btn" onclick="toggleBGM()" title="播放/暫停">⏸️</button>
-                <button class="music-btn" onclick="playRandomBGM()" title="換一首">🔀</button>
-                <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.1" value="0.3" oninput="changeVolume(this.value)" title="音量">
-            </div>
-
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 40px;"> <h3 id="level-title" style="margin:0; font-size: 1.5em;">第 X 關</h3>
-                <button class="btn btn-gray btn-sm" onclick="exitQuiz()">🏠 回到地圖</button>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 id="level-title" style="margin:0; font-size: 1.5em;">第 X 關</h3>
+                <button class="btn btn-gray btn-sm" onclick="exitQuiz()">🏠 放棄</button>
             </div>
             
             <div class="progress-container">
                 <div id="progress-bar" class="progress-bar"></div>
             </div>
             <div style="text-align: right; font-size: 1.1em; color: gray;">
-                題號: <span id="current-q-num">1</span> / <span id="total-q-num">30</span>
+                題號: <span id="current-q-num">1</span> / <span id="total-q-num">20</span>
             </div>
 
             <div class="question-box">
@@ -272,6 +261,7 @@
             <ul id="history-list"></ul>
             <div style="margin-top: 30px;">
                 <button class="btn" onclick="goToLevelScreen()">🗺️ 回地圖</button>
+                <button class="btn btn-gray" onclick="clearAllHistory()">🔥 清除全部</button>
             </div>
         </div>
         
@@ -284,17 +274,9 @@
     </div>
 
     <script>
-        // ============================================
-        // 🎵 請在這裡設定你的背景音樂檔名 🎵
-        // 放在 sounds/bgm/ 資料夾內
-        const BGM_FILES = [
-            "bgm1.mp3", 
-            "bgm2.mp3",
-            "bgm3.mp3" 
-        ]; 
-        // ============================================
-
-        const LEVEL_CONFIG = [30, 30, 30, 30, 30, 30, 30, 30, 18];
+        // 設定關卡參數：共13關 (258題)
+        // 1-12關: 20題, 第13關: 18題
+        const LEVEL_CONFIG = [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 18];
         
         let allQuestions = [];
         let currentQuizQuestions = [];
@@ -305,14 +287,20 @@
         let userAnswers = {};
         let isMistakeMode = false;
         
+        // 音效控制
         let audioCorrect = new Audio('sounds/correct.mp3'); 
-        audioCorrect.volume = 0.4; // 設定答對音量 (0.0 ~ 1.0)
-
+        audioCorrect.volume = 0.4;
         let audioFail = new Audio('sounds/fail.mp3');
-        audioFail.volume = 0.4; // 設定答錯音量 (0.0 ~ 1.0)
-        let bgmPlayer = new Audio();
-        bgmPlayer.loop = true; // 設定循環播放
-        bgmPlayer.volume = 0.3; // 預設音量
+        audioFail.volume = 0.4;
+        
+        // 背景音樂
+        let bgm = document.getElementById('bgm');
+        bgm.volume = 0.3; // 背景音樂小聲一點
+
+        function toggleMusic() {
+            if (bgm.paused) bgm.play();
+            else bgm.pause();
+        }
 
         fetch('questions.json')
             .then(response => response.json())
@@ -322,49 +310,6 @@
                 if(savedName) document.getElementById('username').value = savedName;
             })
             .catch(error => console.error('無法讀取題目:', error));
-
-        // --- 音樂控制功能 ---
-        function playRandomBGM() {
-            if (BGM_FILES.length === 0) return;
-            // 隨機選一首
-            let randomFile = BGM_FILES[Math.floor(Math.random() * BGM_FILES.length)];
-            bgmPlayer.src = `sounds/bgm/${randomFile}`;
-            bgmPlayer.play().then(() => {
-                updatePlayBtn(true);
-            }).catch(e => {
-                console.log("自動播放被阻擋，等待使用者互動", e);
-                updatePlayBtn(false);
-            });
-        }
-
-        function toggleBGM() {
-            if (bgmPlayer.paused) {
-                // 如果還沒設定過來源(第一次按)，就隨機選一首
-                if (!bgmPlayer.src) playRandomBGM();
-                else bgmPlayer.play();
-                updatePlayBtn(true);
-            } else {
-                bgmPlayer.pause();
-                updatePlayBtn(false);
-            }
-        }
-
-        function stopBGM() {
-            bgmPlayer.pause();
-            bgmPlayer.currentTime = 0;
-            updatePlayBtn(false);
-        }
-
-        function changeVolume(val) {
-            bgmPlayer.volume = val;
-        }
-
-        function updatePlayBtn(isPlaying) {
-            const btn = document.getElementById('play-pause-btn');
-            btn.innerText = isPlaying ? "⏸️" : "▶️";
-        }
-
-        // --- 導航與狀態管理 ---
 
         function getProgress() {
             return JSON.parse(localStorage.getItem('quizProgress')) || { maxLevel: 1, levelScores: {} };
@@ -387,7 +332,8 @@
             userName = inputName;
             localStorage.setItem('quizUserName', userName);
 
-            stopBGM(); // 回到地圖時停止音樂
+            // 啟動音樂 (使用者互動後)
+            bgm.play().catch(e => console.log("瀏覽器阻擋自動播放，需手動開啟"));
 
             document.getElementById('display-name').innerText = userName;
             document.getElementById('welcome-screen').style.display = 'none';
@@ -396,24 +342,30 @@
             document.getElementById('quiz-content').style.display = 'none';
             document.getElementById('level-screen').style.display = 'block';
 
-            renderLevelGrid();
+            renderLevelPath();
             updateMistakeButton();
         }
 
-        function renderLevelGrid() {
-            const grid = document.getElementById('level-grid');
-            grid.innerHTML = "";
+        function renderLevelPath() {
+            const container = document.getElementById('level-path');
+            container.innerHTML = "";
             const progress = getProgress();
 
             LEVEL_CONFIG.forEach((count, index) => {
                 let levelNum = index + 1;
+                let wrapper = document.createElement('div');
+                wrapper.className = 'level-wrapper';
+
                 let btn = document.createElement('button');
                 btn.className = 'level-btn';
                 
                 if (levelNum <= progress.maxLevel) {
                     let bestScore = progress.levelScores[levelNum];
-                    let icon = bestScore >= 60 ? '⭐' : '🚩';
-                    let scoreText = bestScore !== undefined ? `<div class="level-score">${bestScore}分</div>` : '<div class="level-score">未挑戰</div>';
+                    let icon = bestScore >= 60 ? '🚩' : '🏳️';
+                    if (bestScore === 100) icon = '👑';
+                    else if (bestScore >= 80) icon = '⭐';
+
+                    let scoreText = bestScore !== undefined ? `<div class="level-score">${bestScore}分</div>` : '<div class="level-score">GO!</div>';
                     
                     btn.innerHTML = `<div class="level-title">${icon} 第 ${levelNum} 關</div>${scoreText}`;
                     btn.onclick = () => startQuiz('level', levelNum);
@@ -421,7 +373,18 @@
                     btn.disabled = true;
                     btn.innerHTML = `<div class="level-title">🔒 第 ${levelNum} 關</div><div class="level-score" style="color:gray">鎖定</div>`;
                 }
-                grid.appendChild(btn);
+                
+                wrapper.appendChild(btn);
+
+                // 如果不是最後一關，加入箭頭
+                if (index < LEVEL_CONFIG.length - 1) {
+                    let arrow = document.createElement('div');
+                    arrow.className = 'arrow-icon';
+                    arrow.innerText = '➜'; // 箭頭符號
+                    wrapper.appendChild(arrow);
+                }
+
+                container.appendChild(wrapper);
             });
         }
 
@@ -437,7 +400,6 @@
         }
 
         // --- 測驗邏輯 ---
-
         function startQuiz(mode, levelNum) {
             isMistakeMode = (mode === 'mistake');
             userAnswers = {};
@@ -455,7 +417,7 @@
                 let endIndex = startIndex + LEVEL_CONFIG[levelNum - 1];
                 
                 if (allQuestions.length < endIndex) {
-                    alert(`題目載入中或不足，請稍後。`);
+                    alert(`題目載入中或不足，請稍後再試。`);
                     return;
                 }
                 currentQuizQuestions = allQuestions.slice(startIndex, endIndex);
@@ -471,13 +433,11 @@
             document.getElementById('quiz-content').style.display = 'block';
             document.getElementById('total-q-num').innerText = currentQuizQuestions.length;
             
-            playRandomBGM(); // 開始播放背景音樂
             loadQuestion();
         }
 
         function loadQuestion() {
             const currentQuestion = currentQuizQuestions[currentQuestionIndex];
-            
             let progress = ((currentQuestionIndex) / currentQuizQuestions.length) * 100;
             document.getElementById('progress-bar').style.width = progress + "%";
             document.getElementById('current-q-num').innerText = currentQuestionIndex + 1;
@@ -552,8 +512,6 @@
         }
 
         function showResult() {
-            stopBGM(); // 測驗結束停止音樂
-
             document.getElementById('quiz-content').style.display = 'none';
             document.getElementById('score-box').style.display = 'block';
             
@@ -585,8 +543,7 @@
             renderReviewList('review-list', currentQuizQuestions, userAnswers);
         }
 
-        // --- 錯題本與歷史紀錄功能 ---
-
+        // --- 錯題本與歷史紀錄 ---
         function getMistakeBank() { return JSON.parse(localStorage.getItem('mistakeBank')) || []; }
         function updateMistakeButton() {
             let mistakes = getMistakeBank();
@@ -697,6 +654,13 @@
             document.getElementById('history-score').innerText = record.score;
             let examQuestions = allQuestions.filter(q => record.questionIds.includes(q.id));
             renderReviewList('history-review-list', examQuestions, record.answers);
+        }
+
+        function clearAllHistory() {
+            if(confirm("確定要刪除 *全部* 歷史紀錄嗎？")) {
+                localStorage.removeItem('quizHistory');
+                showHistory();
+            }
         }
     </script>
 </body>
