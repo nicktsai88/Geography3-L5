@@ -306,7 +306,10 @@
         let isMistakeMode = false;
         
         let audioCorrect = new Audio('sounds/correct.mp3'); 
+        audioCorrect.volume = 0.4; // 設定答對音量 (0.0 ~ 1.0)
+
         let audioFail = new Audio('sounds/fail.mp3');
+        audioFail.volume = 0.4; // 設定答錯音量 (0.0 ~ 1.0)
         let bgmPlayer = new Audio();
         bgmPlayer.loop = true; // 設定循環播放
         bgmPlayer.volume = 0.3; // 預設音量
