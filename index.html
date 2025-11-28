@@ -20,7 +20,7 @@
 
         body { 
             font-family: 'CwTeXYen', "Microsoft JhengHei", Arial, sans-serif; 
-            max-width: 900px; /* 稍微放寬最大寬度以適應大字體 */
+            max-width: 900px; 
             margin: 0 auto; 
             padding: 20px; 
             background-color: var(--bg-color); 
@@ -31,7 +31,6 @@
 
         h1, h2, h3 { color: #D35400; text-align: center; margin-top: 0; }
         
-        /* 標題字體加大 */
         h1 { font-size: 2.5em; }
         h2 { font-size: 2em; }
 
@@ -48,7 +47,7 @@
 
         .btn {
             background-color: var(--primary-color); color: white; border: none;
-            padding: 12px 25px; font-size: 1.3em; /* 按鈕字體加大 */
+            padding: 12px 25px; font-size: 1.3em; 
             border-radius: 50px;
             cursor: pointer; transition: 0.3s; box-shadow: 0 4px 0 #E67E22;
             font-family: inherit; font-weight: bold; margin: 8px; display: inline-block;
@@ -58,19 +57,41 @@
         .btn-green { background-color: var(--correct-color); box-shadow: 0 4px 0 #27AE60; }
         .btn-red { background-color: var(--accent-color); box-shadow: 0 4px 0 #C0392B; }
         .btn-gray { background-color: #95a5a6; box-shadow: 0 4px 0 #7f8c8d; }
-        /* 小按鈕樣式 */
         .btn-sm { padding: 8px 16px; font-size: 1em; margin: 0 2px; }
 
         input[type="text"] {
-            padding: 12px; font-size: 1.5em; /* 輸入框字體加大 */
+            padding: 12px; font-size: 1.5em; 
             border: 2px solid var(--primary-color);
             border-radius: 10px; margin: 15px; font-family: inherit; text-align: center; width: 80%;
+        }
+
+        /* 音樂播放器樣式 */
+        .music-player {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--primary-color);
+            border-radius: 30px;
+            padding: 5px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        .music-btn {
+            background: none; border: none; font-size: 1.5em; cursor: pointer; padding: 0; color: var(--primary-color);
+        }
+        .music-btn:hover { transform: scale(1.1); }
+        .volume-slider {
+            width: 80px; accent-color: var(--primary-color); cursor: pointer;
         }
 
         /* 關卡選單樣式 */
         .level-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* 格子稍微加大 */
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
             gap: 15px;
             margin: 20px 0;
         }
@@ -79,7 +100,7 @@
             border: 3px solid var(--primary-color);
             border-radius: 15px;
             padding: 15px;
-            font-size: 1.3em; /* 關卡按鈕字體加大 */
+            font-size: 1.3em; 
             cursor: pointer;
             transition: 0.2s;
             color: var(--primary-color);
@@ -111,21 +132,21 @@
 
         /* 進度條 */
         .progress-container {
-            width: 100%; background-color: #eee; border-radius: 10px; margin: 15px 0; height: 25px; /* 進度條變高 */
+            width: 100%; background-color: #eee; border-radius: 10px; margin: 15px 0; height: 25px; 
             overflow: hidden;
         }
         .progress-bar {
             height: 100%; background-color: var(--correct-color); width: 0%; transition: width 0.3s ease;
         }
 
-        /* 題目樣式 - 重點修改區域 */
+        /* 題目樣式 */
         .question-box { 
             background-color: #FFF9F0; 
             border-left: 8px solid var(--accent-color);
             padding: 25px; margin-bottom: 25px; border-radius: 15px;
         }
         .question-text { 
-            font-size: 1.8em; /* 題目字體顯著加大 */
+            font-size: 1.8em; 
             font-weight: 600; 
             line-height: 1.6; 
         }
@@ -139,7 +160,7 @@
             width: 100%; padding: 20px; margin: 12px 0; text-align: left; 
             background: white; border: 3px solid #FFE4B5; border-radius: 20px; 
             cursor: pointer; transition: 0.2s; 
-            font-size: 1.5em; /* 選項字體顯著加大 */
+            font-size: 1.5em; 
             font-family: inherit; position: relative;
             line-height: 1.4;
         }
@@ -151,7 +172,7 @@
         .explanation-box, .review-item {
             margin-top: 20px; padding: 20px; background-color: #E8F6F3;
             border: 3px dashed #1ABC9C; border-radius: 15px; 
-            color: #0E6251; font-size: 1.3em; /* 解析字體加大 */
+            color: #0E6251; font-size: 1.3em; 
             text-align: left; line-height: 1.6;
         }
         .review-list { list-style: none; padding: 0; }
@@ -197,8 +218,13 @@
         </div>
 
         <div id="quiz-content" style="display: none;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h3 id="level-title" style="margin:0; font-size: 1.5em;">第 X 關</h3>
+            <div class="music-player">
+                <button id="play-pause-btn" class="music-btn" onclick="toggleBGM()" title="播放/暫停">⏸️</button>
+                <button class="music-btn" onclick="playRandomBGM()" title="換一首">🔀</button>
+                <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.1" value="0.3" oninput="changeVolume(this.value)" title="音量">
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 40px;"> <h3 id="level-title" style="margin:0; font-size: 1.5em;">第 X 關</h3>
                 <button class="btn btn-gray btn-sm" onclick="exitQuiz()">🏠 放棄</button>
             </div>
             
@@ -246,7 +272,6 @@
             <ul id="history-list"></ul>
             <div style="margin-top: 30px;">
                 <button class="btn" onclick="goToLevelScreen()">🗺️ 回地圖</button>
-                <button class="btn btn-gray" onclick="clearAllHistory()">🔥 清除全部</button>
             </div>
         </div>
         
@@ -259,6 +284,16 @@
     </div>
 
     <script>
+        // ============================================
+        // 🎵 請在這裡設定你的背景音樂檔名 🎵
+        // 放在 sounds/bgm/ 資料夾內
+        const BGM_FILES = [
+            "bgm1.mp3", 
+            "bgm2.mp3",
+            "bgm3.mp3" 
+        ]; 
+        // ============================================
+
         const LEVEL_CONFIG = [30, 30, 30, 30, 30, 30, 30, 30, 18];
         
         let allQuestions = [];
@@ -272,6 +307,9 @@
         
         let audioCorrect = new Audio('sounds/correct.mp3'); 
         let audioFail = new Audio('sounds/fail.mp3');
+        let bgmPlayer = new Audio();
+        bgmPlayer.loop = true; // 設定循環播放
+        bgmPlayer.volume = 0.3; // 預設音量
 
         fetch('questions.json')
             .then(response => response.json())
@@ -281,6 +319,47 @@
                 if(savedName) document.getElementById('username').value = savedName;
             })
             .catch(error => console.error('無法讀取題目:', error));
+
+        // --- 音樂控制功能 ---
+        function playRandomBGM() {
+            if (BGM_FILES.length === 0) return;
+            // 隨機選一首
+            let randomFile = BGM_FILES[Math.floor(Math.random() * BGM_FILES.length)];
+            bgmPlayer.src = `sounds/bgm/${randomFile}`;
+            bgmPlayer.play().then(() => {
+                updatePlayBtn(true);
+            }).catch(e => {
+                console.log("自動播放被阻擋，等待使用者互動", e);
+                updatePlayBtn(false);
+            });
+        }
+
+        function toggleBGM() {
+            if (bgmPlayer.paused) {
+                // 如果還沒設定過來源(第一次按)，就隨機選一首
+                if (!bgmPlayer.src) playRandomBGM();
+                else bgmPlayer.play();
+                updatePlayBtn(true);
+            } else {
+                bgmPlayer.pause();
+                updatePlayBtn(false);
+            }
+        }
+
+        function stopBGM() {
+            bgmPlayer.pause();
+            bgmPlayer.currentTime = 0;
+            updatePlayBtn(false);
+        }
+
+        function changeVolume(val) {
+            bgmPlayer.volume = val;
+        }
+
+        function updatePlayBtn(isPlaying) {
+            const btn = document.getElementById('play-pause-btn');
+            btn.innerText = isPlaying ? "⏸️" : "▶️";
+        }
 
         // --- 導航與狀態管理 ---
 
@@ -304,6 +383,8 @@
             if (!inputName) { alert("請先輸入名字！"); return; }
             userName = inputName;
             localStorage.setItem('quizUserName', userName);
+
+            stopBGM(); // 回到地圖時停止音樂
 
             document.getElementById('display-name').innerText = userName;
             document.getElementById('welcome-screen').style.display = 'none';
@@ -387,6 +468,7 @@
             document.getElementById('quiz-content').style.display = 'block';
             document.getElementById('total-q-num').innerText = currentQuizQuestions.length;
             
+            playRandomBGM(); // 開始播放背景音樂
             loadQuestion();
         }
 
@@ -467,6 +549,8 @@
         }
 
         function showResult() {
+            stopBGM(); // 測驗結束停止音樂
+
             document.getElementById('quiz-content').style.display = 'none';
             document.getElementById('score-box').style.display = 'block';
             
@@ -498,7 +582,7 @@
             renderReviewList('review-list', currentQuizQuestions, userAnswers);
         }
 
-        // --- 錯題本與歷史紀錄功能更新 ---
+        // --- 錯題本與歷史紀錄功能 ---
 
         function getMistakeBank() { return JSON.parse(localStorage.getItem('mistakeBank')) || []; }
         function updateMistakeButton() {
@@ -610,13 +694,6 @@
             document.getElementById('history-score').innerText = record.score;
             let examQuestions = allQuestions.filter(q => record.questionIds.includes(q.id));
             renderReviewList('history-review-list', examQuestions, record.answers);
-        }
-
-        function clearAllHistory() {
-            if(confirm("確定要刪除 *全部* 歷史紀錄嗎？")) {
-                localStorage.removeItem('quizHistory');
-                showHistory();
-            }
         }
     </script>
 </body>
