@@ -20,7 +20,7 @@
 
         body { 
             font-family: 'CwTeXYen', "Microsoft JhengHei", Arial, sans-serif; 
-            max-width: 800px; 
+            max-width: 900px; /* 稍微放寬最大寬度以適應大字體 */
             margin: 0 auto; 
             padding: 20px; 
             background-color: var(--bg-color); 
@@ -30,6 +30,10 @@
         }
 
         h1, h2, h3 { color: #D35400; text-align: center; margin-top: 0; }
+        
+        /* 標題字體加大 */
+        h1 { font-size: 2.5em; }
+        h2 { font-size: 2em; }
 
         .quiz-container { 
             background: white; 
@@ -44,9 +48,10 @@
 
         .btn {
             background-color: var(--primary-color); color: white; border: none;
-            padding: 10px 20px; font-size: 1.1em; border-radius: 50px;
+            padding: 12px 25px; font-size: 1.3em; /* 按鈕字體加大 */
+            border-radius: 50px;
             cursor: pointer; transition: 0.3s; box-shadow: 0 4px 0 #E67E22;
-            font-family: inherit; font-weight: bold; margin: 5px; display: inline-block;
+            font-family: inherit; font-weight: bold; margin: 8px; display: inline-block;
         }
         .btn:hover { transform: translateY(-2px); }
         .btn:active { transform: translateY(2px); box-shadow: none; }
@@ -54,18 +59,18 @@
         .btn-red { background-color: var(--accent-color); box-shadow: 0 4px 0 #C0392B; }
         .btn-gray { background-color: #95a5a6; box-shadow: 0 4px 0 #7f8c8d; }
         /* 小按鈕樣式 */
-        .btn-sm { padding: 5px 12px; font-size: 0.9em; margin: 0 2px; }
+        .btn-sm { padding: 8px 16px; font-size: 1em; margin: 0 2px; }
 
         input[type="text"] {
-            padding: 10px; font-size: 1.2em; border: 2px solid var(--primary-color);
-            border-radius: 10px; margin: 10px; font-family: inherit; text-align: center; width: 80%;
+            padding: 12px; font-size: 1.5em; /* 輸入框字體加大 */
+            border: 2px solid var(--primary-color);
+            border-radius: 10px; margin: 15px; font-family: inherit; text-align: center; width: 80%;
         }
 
-        /* 關卡選單樣式修正 */
+        /* 關卡選單樣式 */
         .level-grid {
             display: grid;
-            /* 將最小寬度從 100px 改為 130px，給予更多空間 */
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* 格子稍微加大 */
             gap: 15px;
             margin: 20px 0;
         }
@@ -74,7 +79,7 @@
             border: 3px solid var(--primary-color);
             border-radius: 15px;
             padding: 15px;
-            font-size: 1.2em;
+            font-size: 1.3em; /* 關卡按鈕字體加大 */
             cursor: pointer;
             transition: 0.2s;
             color: var(--primary-color);
@@ -82,11 +87,11 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 110px; /* 稍微增高 */
+            height: 120px; 
         }
         .level-title {
-            white-space: nowrap; /* 強制不換行 */
-            margin-bottom: 5px;
+            white-space: nowrap; 
+            margin-bottom: 8px;
         }
         .level-btn:hover:not(:disabled) {
             background-color: #FFF0D4;
@@ -106,30 +111,37 @@
 
         /* 進度條 */
         .progress-container {
-            width: 100%; background-color: #eee; border-radius: 10px; margin: 15px 0; height: 20px; overflow: hidden;
+            width: 100%; background-color: #eee; border-radius: 10px; margin: 15px 0; height: 25px; /* 進度條變高 */
+            overflow: hidden;
         }
         .progress-bar {
             height: 100%; background-color: var(--correct-color); width: 0%; transition: width 0.3s ease;
         }
 
-        /* 題目樣式 */
+        /* 題目樣式 - 重點修改區域 */
         .question-box { 
             background-color: #FFF9F0; 
-            border-left: 6px solid var(--accent-color);
-            padding: 20px; margin-bottom: 20px; border-radius: 10px;
+            border-left: 8px solid var(--accent-color);
+            padding: 25px; margin-bottom: 25px; border-radius: 15px;
         }
-        .question-text { font-size: 1.3em; font-weight: 600; line-height: 1.5; }
+        .question-text { 
+            font-size: 1.8em; /* 題目字體顯著加大 */
+            font-weight: 600; 
+            line-height: 1.6; 
+        }
         .question-img { 
-            max-width: 100%; max-height: 300px; display: block; 
-            margin: 15px auto; border: 4px solid white; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px; 
+            max-width: 100%; max-height: 400px; display: block; 
+            margin: 20px auto; border: 4px solid white; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 15px; 
         }
 
         .option-btn { 
-            width: 100%; padding: 15px; margin: 8px 0; text-align: left; 
-            background: white; border: 2px solid #FFE4B5; border-radius: 15px; 
-            cursor: pointer; transition: 0.2s; font-size: 1.1em; 
+            width: 100%; padding: 20px; margin: 12px 0; text-align: left; 
+            background: white; border: 3px solid #FFE4B5; border-radius: 20px; 
+            cursor: pointer; transition: 0.2s; 
+            font-size: 1.5em; /* 選項字體顯著加大 */
             font-family: inherit; position: relative;
+            line-height: 1.4;
         }
         .option-btn:hover { background-color: #FFF0D4; border-color: var(--primary-color); }
         .correct { background-color: #D4EDDA !important; border-color: var(--correct-color) !important; color: #155724; }
@@ -137,26 +149,27 @@
 
         /* 解析與複習 */
         .explanation-box, .review-item {
-            margin-top: 15px; padding: 15px; background-color: #E8F6F3;
-            border: 2px dashed #1ABC9C; border-radius: 10px; 
-            color: #0E6251; font-size: 1em; text-align: left;
+            margin-top: 20px; padding: 20px; background-color: #E8F6F3;
+            border: 3px dashed #1ABC9C; border-radius: 15px; 
+            color: #0E6251; font-size: 1.3em; /* 解析字體加大 */
+            text-align: left; line-height: 1.6;
         }
         .review-list { list-style: none; padding: 0; }
-        .review-item { margin-bottom: 20px; background: white; border: 2px solid #eee; }
-        .tag { padding: 2px 8px; border-radius: 5px; font-size: 0.8em; color: white; margin-right: 5px; }
+        .review-item { margin-bottom: 25px; background: white; border: 2px solid #eee; }
+        .tag { padding: 4px 10px; border-radius: 5px; font-size: 0.8em; color: white; margin-right: 8px; vertical-align: middle;}
         .tag-correct { background-color: var(--correct-color); }
         .tag-wrong { background-color: var(--wrong-color); }
 
         /* 歷史紀錄列表 */
         #history-list { list-style: none; padding: 0; }
         #history-list li { 
-            background: white; margin: 10px 0; padding: 15px; 
-            border-radius: 15px; border: 2px solid #eee; display: flex; 
+            background: white; margin: 15px 0; padding: 20px; 
+            border-radius: 20px; border: 2px solid #eee; display: flex; 
             justify-content: space-between; align-items: center;
-            flex-wrap: wrap;
+            flex-wrap: wrap; font-size: 1.2em;
         }
         .history-info { flex-grow: 1; text-align: left; }
-        .history-actions { display: flex; gap: 5px; }
+        .history-actions { display: flex; gap: 10px; }
     </style>
 </head>
 <body>
@@ -164,8 +177,8 @@
     <div class="quiz-container">
         <div id="welcome-screen">
             <h1>🎒 社會科大冒險</h1>
-            <div style="font-size: 4em; margin: 20px;">🌏✨🇯🇵🇰🇷</div>
-            <p>請輸入你的名字來開始冒險！</p>
+            <div style="font-size: 5em; margin: 30px;">🌏✨🇯🇵🇰🇷</div>
+            <p style="font-size: 1.5em;">請輸入你的名字來開始冒險！</p>
             <input type="text" id="username" placeholder="你的名字是..." />
             <br>
             <button class="btn" onclick="goToLevelScreen()">👉 進入關卡地圖</button>
@@ -173,10 +186,10 @@
 
         <div id="level-screen" style="display: none; text-align: center;">
             <h2>🗺️ 選擇關卡</h2>
-            <p>嗨，<span id="display-name" style="color:var(--primary-color); font-weight:bold;"></span>！準備好挑戰哪一關？</p>
+            <p style="font-size: 1.3em;">嗨，<span id="display-name" style="color:var(--primary-color); font-weight:bold;"></span>！準備好挑戰哪一關？</p>
             <div id="level-grid" class="level-grid"></div>
             
-            <div style="margin-top: 20px;">
+            <div style="margin-top: 30px;">
                 <button id="btn-mistake" class="btn btn-red" onclick="startQuiz('mistake')" style="display:none;">📕 挑戰錯題本 (<span id="mistake-count">0</span>)</button>
                 <button class="btn btn-green" onclick="showHistory()">📜 查看紀錄</button>
                 <button class="btn btn-gray" onclick="logout()">🚪 登出</button>
@@ -185,14 +198,14 @@
 
         <div id="quiz-content" style="display: none;">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h3 id="level-title" style="margin:0;">第 X 關</h3>
+                <h3 id="level-title" style="margin:0; font-size: 1.5em;">第 X 關</h3>
                 <button class="btn btn-gray btn-sm" onclick="exitQuiz()">🏠 放棄</button>
             </div>
             
             <div class="progress-container">
                 <div id="progress-bar" class="progress-bar"></div>
             </div>
-            <div style="text-align: right; font-size: 0.9em; color: gray;">
+            <div style="text-align: right; font-size: 1.1em; color: gray;">
                 題號: <span id="current-q-num">1</span> / <span id="total-q-num">30</span>
             </div>
 
@@ -206,21 +219,22 @@
                 <strong>💡 解析：</strong> <span id="explanation-text"></span>
             </div>
 
-            <button id="next-btn" class="btn" style="display: none; width: 100%; margin-top: 20px;" onclick="nextQuestion()">下一題 ➡️</button>
+            <button id="next-btn" class="btn" style="display: none; width: 100%; margin-top: 25px;" onclick="nextQuestion()">下一題 ➡️</button>
         </div>
 
         <div id="score-box" style="display: none; text-align: center;">
             <h2>🎉 關卡完成！</h2>
-            <p style="font-size: 2.5em; margin: 10px 0; font-weight: bold; color: var(--accent-color);"><span id="final-score"></span> 分</p>
-            <div id="score-comment" style="font-size: 1.2em; margin-bottom: 20px;"></div>
-            <div id="unlock-msg" style="color: var(--correct-color); font-weight: bold; display:none; margin-bottom: 10px;">🔓 太棒了！下一關已解鎖！</div>
+            <p style="font-size: 2em; margin: 10px 0; font-weight: bold; color: var(--primary-color);">參賽者：<span id="final-name"></span></p>
+            <p style="font-size: 4em; margin: 10px 0; font-weight: bold; color: var(--accent-color);"><span id="final-score"></span> 分</p>
+            <div id="score-comment" style="font-size: 1.5em; margin-bottom: 25px;"></div>
+            <div id="unlock-msg" style="color: var(--correct-color); font-weight: bold; display:none; margin-bottom: 15px; font-size: 1.5em;">🔓 太棒了！下一關已解鎖！</div>
             
-            <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+            <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
                 <button class="btn" onclick="goToLevelScreen()">🗺️ 回地圖</button>
                 <button class="btn btn-green" onclick="toggleReview()">📝 查看完整解析</button>
             </div>
 
-            <div id="full-review-area" style="display: none; margin-top: 30px;">
+            <div id="full-review-area" style="display: none; margin-top: 40px;">
                 <h3>🔍 試卷回顧</h3>
                 <ul id="review-list" class="review-list"></ul>
                 <button class="btn" onclick="goToLevelScreen()">🗺️ 回地圖</button>
@@ -230,7 +244,7 @@
         <div id="history-screen" style="display: none;">
             <h2>📜 冒險英雄榜</h2>
             <ul id="history-list"></ul>
-            <div style="margin-top: 20px;">
+            <div style="margin-top: 30px;">
                 <button class="btn" onclick="goToLevelScreen()">🗺️ 回地圖</button>
                 <button class="btn btn-gray" onclick="clearAllHistory()">🔥 清除全部</button>
             </div>
@@ -238,7 +252,7 @@
         
         <div id="history-detail-screen" style="display: none;">
             <h3>📜 歷史試卷回顧</h3>
-            <p>時間：<span id="history-date"></span> | 分數：<span id="history-score"></span></p>
+            <p style="font-size: 1.2em;">時間：<span id="history-date"></span> | 分數：<span id="history-score"></span></p>
             <ul id="history-review-list" class="review-list"></ul>
             <button class="btn" onclick="showHistory()">⬅️ 返回列表</button>
         </div>
@@ -317,7 +331,6 @@
                     let icon = bestScore >= 60 ? '⭐' : '🚩';
                     let scoreText = bestScore !== undefined ? `<div class="level-score">${bestScore}分</div>` : '<div class="level-score">未挑戰</div>';
                     
-                    // 使用 level-title 類別來強制不換行
                     btn.innerHTML = `<div class="level-title">${icon} 第 ${levelNum} 關</div>${scoreText}`;
                     btn.onclick = () => startQuiz('level', levelNum);
                 } else {
@@ -459,6 +472,7 @@
             
             let finalScore = Math.round((score / currentQuizQuestions.length) * 100);
             document.getElementById('final-score').innerText = finalScore;
+            document.getElementById('final-name').innerText = userName;
 
             let comment = "";
             let progress = getProgress();
@@ -578,14 +592,12 @@
             }
         }
 
-        // 新增：個別刪除功能
         function deleteHistoryItem(id) {
             if(!confirm("確定要刪除這筆紀錄嗎？")) return;
             let history = JSON.parse(localStorage.getItem('quizHistory')) || [];
-            // 過濾掉該 id 的紀錄
             history = history.filter(r => r.id !== id);
             localStorage.setItem('quizHistory', JSON.stringify(history));
-            showHistory(); // 重新渲染列表
+            showHistory();
         }
 
         function replayHistory(recordId) {
