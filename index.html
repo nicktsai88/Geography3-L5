@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌏 社會科大冒險 - 東北亞篇</title>
+    <title>地理第3冊 東北亞的自然環境</title>
     <link href="https://fonts.googleapis.com/css2?family=CwTeXYen:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
@@ -25,17 +25,54 @@
             padding: 20px; 
             background-color: var(--bg-color); 
             color: var(--text-color);
-            /* 預設背景，若有 map_bg.jpg 會被覆蓋 */
             background-image: radial-gradient(#FFD166 2px, transparent 2px);
             background-size: 30px 30px; 
             min-height: 100vh;
+            padding-top: 80px; /* 為了避開右上角的音樂控制器 */
         }
 
-        h1, h2, h3 { color: #D35400; text-align: center; margin-top: 0; text-shadow: 2px 2px 0px white; }
-        h1 { font-size: 2.5em; }
+        h1 { font-size: 2.5em; color: #D35400; text-align: center; margin-top: 0; text-shadow: 2px 2px 0px white; }
+        h2, h3 { color: #D35400; text-align: center; }
+
+        /* --- 音樂控制面板 (固定在右上角) --- */
+        .music-panel {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 15px;
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(5px);
+        }
+        .music-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .music-btn:hover { transform: scale(1.1); }
+        .music-info { font-size: 0.9em; font-weight: bold; color: var(--primary-color); display:none;} /* 手機版隱藏曲名以省空間 */
+        @media (min-width: 600px) { .music-info { display: block; } }
         
+        input[type=range] { width: 80px; accent-color: var(--primary-color); }
+
+        /* --- 主要容器 --- */
         .quiz-container { 
-            background: rgba(255, 255, 255, 0.95); /* 微微透明讓背景透出來 */
+            background: rgba(255, 255, 255, 0.95);
             padding: 30px; 
             border-radius: 25px; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
@@ -45,12 +82,19 @@
             min-height: 500px;
         }
 
-        /* 按鈕樣式 */
+        /* --- 動畫特效 --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+
+        /* --- 按鈕樣式 --- */
         .btn {
             background-color: var(--primary-color); color: white; border: none;
-            padding: 12px 25px; font-size: 1.3em; border-radius: 50px;
+            padding: 10px 25px; font-size: 1.3em; border-radius: 50px;
             cursor: pointer; transition: 0.3s; box-shadow: 0 5px 0 #E67E22;
-            font-family: inherit; font-weight: bold; margin: 10px; display: inline-block;
+            font-family: inherit; font-weight: bold; margin: 8px; display: inline-block;
         }
         .btn:hover { transform: translateY(-3px); }
         .btn:active { transform: translateY(2px); box-shadow: none; }
@@ -59,15 +103,34 @@
         .btn-gray { background-color: #95a5a6; box-shadow: 0 5px 0 #7f8c8d; }
         .btn-sm { padding: 8px 16px; font-size: 1em; margin: 0 2px; box-shadow: 0 3px 0 #bdc3c7;}
 
+        /* --- 輸入框與快速登入 --- */
         input[type="text"] {
             padding: 12px; font-size: 1.5em; 
             border: 3px solid var(--primary-color);
             border-radius: 15px; margin: 15px; font-family: inherit; text-align: center; width: 80%;
         }
+        .quick-login-area {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        .user-tag {
+            background: #FFF0D4;
+            border: 2px solid var(--primary-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: 0.2s;
+            color: #D35400;
+        }
+        .user-tag:hover { background: var(--primary-color); color: white; }
+        .delete-user { margin-left: 8px; color: #E74C3C; font-weight: bold; cursor: pointer; }
 
-        /* --- 關卡地圖樣式 (重頭戲) --- */
+        /* --- 關卡地圖樣式 --- */
         #level-screen {
-            /* 這裡設定地圖背景，請確保 images 資料夾有 map_bg.jpg */
             background-image: url('images/map_bg.jpg'); 
             background-size: cover;
             background-position: center;
@@ -82,7 +145,7 @@
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            gap: 20px;
+            gap: 10px; /* 縮小間距讓箭頭更緊密 */
             margin: 20px 0;
         }
 
@@ -94,9 +157,9 @@
         .level-btn {
             background-color: white;
             border: 4px solid var(--primary-color);
-            border-radius: 50%; /* 圓形關卡按鈕 */
-            width: 110px;
-            height: 110px;
+            border-radius: 50%;
+            width: 100px; /* 稍微縮小圓圈 */
+            height: 100px;
             font-size: 1.1em;
             cursor: pointer;
             transition: 0.2s;
@@ -109,45 +172,47 @@
             position: relative;
             z-index: 2;
         }
-        .level-title { 
-            white-space: nowrap; font-weight: bold; margin-bottom: 5px;
-        }
-        .level-btn:hover:not(:disabled) {
-            background-color: #FFF0D4; transform: scale(1.1) rotate(3deg);
-        }
-        .level-btn:disabled {
-            background-color: #e0e0e0; border-color: var(--locked-color);
-            color: var(--locked-color); cursor: not-allowed;
-        }
-        
-        /* 箭頭樣式 */
+        .level-title { white-space: nowrap; font-weight: bold; margin-bottom: 5px; }
+        .level-btn:hover:not(:disabled) { background-color: #FFF0D4; transform: scale(1.1) rotate(3deg); }
+        .level-btn:disabled { background-color: #e0e0e0; border-color: var(--locked-color); color: var(--locked-color); cursor: not-allowed; }
+        .level-score { font-size: 0.8em; color: var(--correct-color); font-weight: bold; }
+
         .arrow-icon {
-            font-size: 2em;
+            font-size: 2.5em;
             color: var(--primary-color);
-            margin: 0 5px;
-            text-shadow: 1px 1px 0 white;
+            margin: 0 -5px; /* 負邊距讓箭頭更靠近圓圈 */
+            text-shadow: 2px 2px 0 white;
             animation: bounce 2s infinite;
+            z-index: 1;
         }
         @keyframes bounce {
             0%, 100% { transform: translateX(0); }
             50% { transform: translateX(5px); }
         }
 
-        /* 題目與選項大字體 */
+        /* --- 題目樣式 --- */
         .question-box { 
             background-color: #FFF9F0; 
             border-left: 8px solid var(--accent-color);
-            padding: 25px; margin-bottom: 25px; border-radius: 15px;
+            padding: 20px; margin-bottom: 20px; border-radius: 15px;
         }
         .question-text { font-size: 1.8em; font-weight: 600; line-height: 1.6; }
+        
+        /* 圖片大小調整：適應 iPad */
         .question-img { 
-            max-width: 100%; max-height: 400px; display: block; 
-            margin: 20px auto; border: 4px solid white; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 15px; 
+            max-width: 100%; 
+            max-height: 220px; /* 限制高度，避免佔滿版面 */
+            width: auto;
+            object-fit: contain; /* 保持比例 */
+            display: block; 
+            margin: 15px auto; 
+            border: 4px solid white; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+            border-radius: 15px; 
         }
 
         .option-btn { 
-            width: 100%; padding: 20px; margin: 12px 0; text-align: left; 
+            width: 100%; padding: 15px; margin: 10px 0; text-align: left; 
             background: white; border: 3px solid #FFE4B5; border-radius: 20px; 
             cursor: pointer; transition: 0.2s; font-size: 1.5em; line-height: 1.4;
             font-family: inherit; position: relative;
@@ -156,11 +221,10 @@
         .correct { background-color: #D4EDDA !important; border-color: var(--correct-color) !important; color: #155724; }
         .wrong { background-color: #F8D7DA !important; border-color: var(--wrong-color) !important; color: #721C24; }
 
-        /* 進度條 */
+        /* --- 進度條與其他 --- */
         .progress-container { width: 100%; background-color: #eee; border-radius: 10px; margin: 15px 0; height: 25px; overflow: hidden; }
         .progress-bar { height: 100%; background-color: var(--correct-color); width: 0%; transition: width 0.3s ease; }
 
-        /* 其他介面 */
         .explanation-box, .review-item {
             margin-top: 20px; padding: 20px; background-color: #E8F6F3;
             border: 3px dashed #1ABC9C; border-radius: 15px; 
@@ -181,21 +245,30 @@
 </head>
 <body>
 
-    <div class="quiz-container">
-        <audio id="bgm" loop>
-            <source src="sounds/bgm.mp3" type="audio/mpeg">
-        </audio>
+    <div class="music-panel">
+        <button class="music-btn" onclick="toggleMusic()" title="播放/暫停">⏯️</button>
+        <button class="music-btn" onclick="nextTrack()" title="下一首">⏭️</button>
+        <span id="music-status" class="music-info">BGM Off</span>
+        <input type="range" id="volume-control" min="0" max="1" step="0.1" value="0.3" title="音量">
+    </div>
 
-        <div id="welcome-screen">
-            <h1>🎒 社會科大冒險</h1>
+    <audio id="bgm-player"></audio>
+
+    <div class="quiz-container">
+        
+        <div id="welcome-screen" class="fade-in">
+            <h1>地理第3冊 東北亞的自然環境</h1>
             <div style="font-size: 5em; margin: 30px;">🌏✨🇯🇵🇰🇷</div>
             <p style="font-size: 1.5em;">請輸入你的名字來開始冒險！</p>
             <input type="text" id="username" placeholder="你的名字是..." />
-            <br>
-            <button class="btn" onclick="goToLevelScreen()">👉 進入關卡地圖</button>
+            
+            <div id="quick-login-area" class="quick-login-area"></div>
+
+            <br><br>
+            <button class="btn" onclick="loginAndStart()">👉 進入關卡地圖</button>
         </div>
 
-        <div id="level-screen" style="display: none; text-align: center;">
+        <div id="level-screen" style="display: none; text-align: center;" class="fade-in">
             <div style="background: rgba(255,255,255,0.8); padding:10px; border-radius:10px; display:inline-block; margin-bottom:10px;">
                 <h2 style="margin:0;">🗺️ 東北亞探險地圖</h2>
                 <p style="font-size: 1.2em; margin:5px;">冒險家：<span id="display-name" style="color:var(--primary-color); font-weight:bold;"></span></p>
@@ -207,14 +280,13 @@
                 <button id="btn-mistake" class="btn btn-red" onclick="startQuiz('mistake')" style="display:none;">📕 挑戰錯題本 (<span id="mistake-count">0</span>)</button>
                 <button class="btn btn-green" onclick="showHistory()">📜 查看紀錄</button>
                 <button class="btn btn-gray" onclick="logout()">🚪 登出</button>
-                <button id="music-btn" class="btn btn-sm" onclick="toggleMusic()" style="background:#3498db;">🔊 音樂開關</button>
             </div>
         </div>
 
-        <div id="quiz-content" style="display: none;">
+        <div id="quiz-content" style="display: none;" class="fade-in">
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <h3 id="level-title" style="margin:0; font-size: 1.5em;">第 X 關</h3>
-                <button class="btn btn-gray btn-sm" onclick="exitQuiz()">🏠 放棄</button>
+                <button class="btn btn-gray btn-sm" onclick="exitQuiz()">🏠 返回探險地圖</button>
             </div>
             
             <div class="progress-container">
@@ -224,11 +296,13 @@
                 題號: <span id="current-q-num">1</span> / <span id="total-q-num">20</span>
             </div>
 
-            <div class="question-box">
-                <div id="question-text" class="question-text">載入中...</div>
-                <img id="question-image" class="question-img" style="display: none;" />
+            <div id="question-container" class="fade-in">
+                <div class="question-box">
+                    <div id="question-text" class="question-text">載入中...</div>
+                    <img id="question-image" class="question-img" style="display: none;" />
+                </div>
+                <ul id="options-list" style="list-style: none; padding: 0;"></ul>
             </div>
-            <ul id="options-list" style="list-style: none; padding: 0;"></ul>
             
             <div id="explanation" class="explanation-box" style="display: none;">
                 <strong>💡 解析：</strong> <span id="explanation-text"></span>
@@ -237,7 +311,7 @@
             <button id="next-btn" class="btn" style="display: none; width: 100%; margin-top: 25px;" onclick="nextQuestion()">下一題 ➡️</button>
         </div>
 
-        <div id="score-box" style="display: none; text-align: center;">
+        <div id="score-box" style="display: none; text-align: center;" class="fade-in">
             <h2>🎉 關卡完成！</h2>
             <p style="font-size: 2em; margin: 10px 0; font-weight: bold; color: var(--primary-color);">參賽者：<span id="final-name"></span></p>
             <p style="font-size: 4em; margin: 10px 0; font-weight: bold; color: var(--accent-color);"><span id="final-score"></span> 分</p>
@@ -256,7 +330,7 @@
             </div>
         </div>
 
-        <div id="history-screen" style="display: none;">
+        <div id="history-screen" style="display: none;" class="fade-in">
             <h2>📜 冒險英雄榜</h2>
             <ul id="history-list"></ul>
             <div style="margin-top: 30px;">
@@ -265,7 +339,7 @@
             </div>
         </div>
         
-        <div id="history-detail-screen" style="display: none;">
+        <div id="history-detail-screen" style="display: none;" class="fade-in">
             <h3>📜 歷史試卷回顧</h3>
             <p style="font-size: 1.2em;">時間：<span id="history-date"></span> | 分數：<span id="history-score"></span></p>
             <ul id="history-review-list" class="review-list"></ul>
@@ -274,10 +348,19 @@
     </div>
 
     <script>
-        // 設定關卡參數：共13關 (258題)
-        // 1-12關: 20題, 第13關: 18題
+        // 設定關卡參數
         const LEVEL_CONFIG = [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 18];
         
+        // --- 音樂播放清單設定 ---
+        const PLAYLIST = [
+            'sounds/bgm1.mp3',
+            'sounds/bgm2.mp3',
+            'sounds/bgm3.mp3'
+        ];
+        let currentTrackIndex = 0;
+        let isPlaying = false;
+        
+        // 全域變數
         let allQuestions = [];
         let currentQuizQuestions = [];
         let currentQuestionIndex = 0;
@@ -293,24 +376,112 @@
         let audioFail = new Audio('sounds/fail.mp3');
         audioFail.volume = 0.4;
         
-        // 背景音樂
-        let bgm = document.getElementById('bgm');
-        bgm.volume = 0.3; // 背景音樂小聲一點
+        // 背景音樂控制器
+        const bgmPlayer = document.getElementById('bgm-player');
+        const volumeControl = document.getElementById('volume-control');
+        const musicStatus = document.getElementById('music-status');
 
-        function toggleMusic() {
-            if (bgm.paused) bgm.play();
-            else bgm.pause();
+        bgmPlayer.volume = 0.3; // 預設音量
+        bgmPlayer.onended = nextTrack; // 播完自動下一首
+
+        // 音樂功能函式
+        function playMusic() {
+            if(PLAYLIST.length === 0) return;
+            bgmPlayer.src = PLAYLIST[currentTrackIndex];
+            bgmPlayer.play().then(() => {
+                isPlaying = true;
+                musicStatus.innerText = `♪ Playing: Track ${currentTrackIndex + 1}`;
+            }).catch(e => {
+                console.log("Auto-play blocked", e);
+                musicStatus.innerText = "Click to Play";
+            });
         }
 
+        function toggleMusic() {
+            if (bgmPlayer.paused) {
+                if(!bgmPlayer.src) bgmPlayer.src = PLAYLIST[currentTrackIndex];
+                bgmPlayer.play();
+                isPlaying = true;
+                musicStatus.innerText = `♪ Playing: Track ${currentTrackIndex + 1}`;
+            } else {
+                bgmPlayer.pause();
+                isPlaying = false;
+                musicStatus.innerText = "Paused";
+            }
+        }
+
+        function nextTrack() {
+            currentTrackIndex = (currentTrackIndex + 1) % PLAYLIST.length;
+            playMusic();
+        }
+
+        volumeControl.addEventListener('input', (e) => {
+            bgmPlayer.volume = e.target.value;
+        });
+
+        // 初始載入
         fetch('questions.json')
             .then(response => response.json())
             .then(data => {
                 allQuestions = data;
-                let savedName = localStorage.getItem('quizUserName');
-                if(savedName) document.getElementById('username').value = savedName;
+                renderQuickLogin(); // 顯示歷史使用者
             })
             .catch(error => console.error('無法讀取題目:', error));
 
+        // --- 登入與使用者管理 ---
+        function getSavedUsers() {
+            return JSON.parse(localStorage.getItem('savedUsers')) || [];
+        }
+
+        function renderQuickLogin() {
+            let users = getSavedUsers();
+            let container = document.getElementById('quick-login-area');
+            container.innerHTML = "";
+            if(users.length > 0) {
+                container.innerHTML = '<div style="width:100%; text-align:center; color:#666; font-size:0.9em; margin-bottom:5px;">快速登入</div>';
+                users.forEach(name => {
+                    let div = document.createElement('div');
+                    div.innerHTML = `
+                        <span class="user-tag" onclick="quickLogin('${name}')">${name}</span>
+                        <span class="delete-user" onclick="deleteUser('${name}')">×</span>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+        }
+
+        function quickLogin(name) {
+            document.getElementById('username').value = name;
+            loginAndStart();
+        }
+
+        function deleteUser(name) {
+            let users = getSavedUsers();
+            users = users.filter(u => u !== name);
+            localStorage.setItem('savedUsers', JSON.stringify(users));
+            renderQuickLogin();
+        }
+
+        function loginAndStart() {
+            const inputName = document.getElementById('username').value.trim();
+            if (!inputName) { alert("請先輸入名字！"); return; }
+            userName = inputName;
+            localStorage.setItem('quizUserName', userName);
+
+            // 儲存新使用者
+            let users = getSavedUsers();
+            if(!users.includes(userName)) {
+                users.push(userName);
+                localStorage.setItem('savedUsers', JSON.stringify(users));
+            }
+
+            // 嘗試播放音樂
+            if (!isPlaying) playMusic();
+
+            goToLevelScreen();
+        }
+
+        // --- 導航與狀態管理 ---
         function getProgress() {
             return JSON.parse(localStorage.getItem('quizProgress')) || { maxLevel: 1, levelScores: {} };
         }
@@ -327,14 +498,6 @@
         }
 
         function goToLevelScreen() {
-            const inputName = document.getElementById('username').value.trim();
-            if (!inputName) { alert("請先輸入名字！"); return; }
-            userName = inputName;
-            localStorage.setItem('quizUserName', userName);
-
-            // 啟動音樂 (使用者互動後)
-            bgm.play().catch(e => console.log("瀏覽器阻擋自動播放，需手動開啟"));
-
             document.getElementById('display-name').innerText = userName;
             document.getElementById('welcome-screen').style.display = 'none';
             document.getElementById('score-box').style.display = 'none';
@@ -376,11 +539,11 @@
                 
                 wrapper.appendChild(btn);
 
-                // 如果不是最後一關，加入箭頭
+                // 箭頭連接
                 if (index < LEVEL_CONFIG.length - 1) {
                     let arrow = document.createElement('div');
                     arrow.className = 'arrow-icon';
-                    arrow.innerText = '➜'; // 箭頭符號
+                    arrow.innerText = '➔'; 
                     wrapper.appendChild(arrow);
                 }
 
@@ -394,7 +557,7 @@
         }
 
         function exitQuiz() {
-            if(confirm("確定要放棄目前的進度回到地圖嗎？")) {
+            if(confirm("確定要放棄目前的進度回到探險地圖嗎？")) {
                 goToLevelScreen();
             }
         }
@@ -438,6 +601,13 @@
 
         function loadQuestion() {
             const currentQuestion = currentQuizQuestions[currentQuestionIndex];
+            
+            // 觸發轉場動畫
+            let qContainer = document.getElementById('question-container');
+            qContainer.classList.remove('fade-in');
+            void qContainer.offsetWidth; // trigger reflow
+            qContainer.classList.add('fade-in');
+
             let progress = ((currentQuestionIndex) / currentQuizQuestions.length) * 100;
             document.getElementById('progress-bar').style.width = progress + "%";
             document.getElementById('current-q-num').innerText = currentQuestionIndex + 1;
