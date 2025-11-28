@@ -29,7 +29,7 @@
             background-size: 30px 30px; 
         }
 
-        h1, h2 { color: #D35400; text-align: center; margin-top: 0; }
+        h1, h2, h3 { color: #D35400; text-align: center; margin-top: 0; }
 
         .quiz-container { 
             background: white; 
@@ -53,16 +53,19 @@
         .btn-green { background-color: var(--correct-color); box-shadow: 0 4px 0 #27AE60; }
         .btn-red { background-color: var(--accent-color); box-shadow: 0 4px 0 #C0392B; }
         .btn-gray { background-color: #95a5a6; box-shadow: 0 4px 0 #7f8c8d; }
+        /* 小按鈕樣式 */
+        .btn-sm { padding: 5px 12px; font-size: 0.9em; margin: 0 2px; }
 
         input[type="text"] {
             padding: 10px; font-size: 1.2em; border: 2px solid var(--primary-color);
             border-radius: 10px; margin: 10px; font-family: inherit; text-align: center; width: 80%;
         }
 
-        /* 關卡選單樣式 */
+        /* 關卡選單樣式修正 */
         .level-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            /* 將最小寬度從 100px 改為 130px，給予更多空間 */
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
             gap: 15px;
             margin: 20px 0;
         }
@@ -79,7 +82,11 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100px;
+            height: 110px; /* 稍微增高 */
+        }
+        .level-title {
+            white-space: nowrap; /* 強制不換行 */
+            margin-bottom: 5px;
         }
         .level-btn:hover:not(:disabled) {
             background-color: #FFF0D4;
@@ -93,7 +100,6 @@
         }
         .level-score {
             font-size: 0.8em;
-            margin-top: 5px;
             color: var(--correct-color);
             font-weight: bold;
         }
@@ -141,12 +147,16 @@
         .tag-correct { background-color: var(--correct-color); }
         .tag-wrong { background-color: var(--wrong-color); }
 
-        /* 歷史紀錄 */
+        /* 歷史紀錄列表 */
+        #history-list { list-style: none; padding: 0; }
         #history-list li { 
             background: white; margin: 10px 0; padding: 15px; 
             border-radius: 15px; border: 2px solid #eee; display: flex; 
             justify-content: space-between; align-items: center;
+            flex-wrap: wrap;
         }
+        .history-info { flex-grow: 1; text-align: left; }
+        .history-actions { display: flex; gap: 5px; }
     </style>
 </head>
 <body>
@@ -176,7 +186,7 @@
         <div id="quiz-content" style="display: none;">
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <h3 id="level-title" style="margin:0;">第 X 關</h3>
-                <button class="btn btn-gray" style="padding:5px 10px; font-size:0.9em;" onclick="exitQuiz()">🏠 放棄返回</button>
+                <button class="btn btn-gray btn-sm" onclick="exitQuiz()">🏠 放棄</button>
             </div>
             
             <div class="progress-container">
@@ -203,7 +213,7 @@
             <h2>🎉 關卡完成！</h2>
             <p style="font-size: 2.5em; margin: 10px 0; font-weight: bold; color: var(--accent-color);"><span id="final-score"></span> 分</p>
             <div id="score-comment" style="font-size: 1.2em; margin-bottom: 20px;"></div>
-            <div id="unlock-msg" style="color: var(--correct-color); font-weight: bold; display:none;">🔓 太棒了！下一關已解鎖！</div>
+            <div id="unlock-msg" style="color: var(--correct-color); font-weight: bold; display:none; margin-bottom: 10px;">🔓 太棒了！下一關已解鎖！</div>
             
             <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
                 <button class="btn" onclick="goToLevelScreen()">🗺️ 回地圖</button>
@@ -220,8 +230,10 @@
         <div id="history-screen" style="display: none;">
             <h2>📜 冒險英雄榜</h2>
             <ul id="history-list"></ul>
-            <button class="btn" onclick="goToLevelScreen()">🗺️ 回地圖</button>
-            <button class="btn btn-gray" onclick="clearHistory()">🗑️ 清除紀錄</button>
+            <div style="margin-top: 20px;">
+                <button class="btn" onclick="goToLevelScreen()">🗺️ 回地圖</button>
+                <button class="btn btn-gray" onclick="clearAllHistory()">🔥 清除全部</button>
+            </div>
         </div>
         
         <div id="history-detail-screen" style="display: none;">
@@ -233,7 +245,6 @@
     </div>
 
     <script>
-        // 設定關卡參數：共9關，前8關30題，第9關18題 (共258題)
         const LEVEL_CONFIG = [30, 30, 30, 30, 30, 30, 30, 30, 18];
         
         let allQuestions = [];
@@ -241,23 +252,19 @@
         let currentQuestionIndex = 0;
         let score = 0;
         let userName = "";
-        let currentLevel = 1; // 當前正在進行的關卡
+        let currentLevel = 1;
         let userAnswers = {};
         let isMistakeMode = false;
         
         let audioCorrect = new Audio('sounds/correct.mp3'); 
         let audioFail = new Audio('sounds/fail.mp3');
 
-        // 初始化
         fetch('questions.json')
             .then(response => response.json())
             .then(data => {
                 allQuestions = data;
-                // 讀取上次登入的名字
                 let savedName = localStorage.getItem('quizUserName');
-                if(savedName) {
-                    document.getElementById('username').value = savedName;
-                }
+                if(savedName) document.getElementById('username').value = savedName;
             })
             .catch(error => console.error('無法讀取題目:', error));
 
@@ -269,11 +276,9 @@
 
         function saveProgress(level, score) {
             let progress = getProgress();
-            // 紀錄該關最高分
             if (!progress.levelScores[level] || score > progress.levelScores[level]) {
                 progress.levelScores[level] = score;
             }
-            // 如果及格(60分)且是當前最新關卡，則解鎖下一關
             if (score >= 60 && level === progress.maxLevel && level < LEVEL_CONFIG.length) {
                 progress.maxLevel++;
             }
@@ -284,7 +289,7 @@
             const inputName = document.getElementById('username').value.trim();
             if (!inputName) { alert("請先輸入名字！"); return; }
             userName = inputName;
-            localStorage.setItem('quizUserName', userName); // 記住名字
+            localStorage.setItem('quizUserName', userName);
 
             document.getElementById('display-name').innerText = userName;
             document.getElementById('welcome-screen').style.display = 'none';
@@ -307,17 +312,17 @@
                 let btn = document.createElement('button');
                 btn.className = 'level-btn';
                 
-                // 判斷是否解鎖
                 if (levelNum <= progress.maxLevel) {
                     let bestScore = progress.levelScores[levelNum];
                     let icon = bestScore >= 60 ? '⭐' : '🚩';
                     let scoreText = bestScore !== undefined ? `<div class="level-score">${bestScore}分</div>` : '<div class="level-score">未挑戰</div>';
                     
-                    btn.innerHTML = `<div>${icon} 第 ${levelNum} 關</div>${scoreText}`;
+                    // 使用 level-title 類別來強制不換行
+                    btn.innerHTML = `<div class="level-title">${icon} 第 ${levelNum} 關</div>${scoreText}`;
                     btn.onclick = () => startQuiz('level', levelNum);
                 } else {
                     btn.disabled = true;
-                    btn.innerHTML = `<div>🔒 第 ${levelNum} 關</div><div class="level-score" style="color:gray">鎖定</div>`;
+                    btn.innerHTML = `<div class="level-title">🔒 第 ${levelNum} 關</div><div class="level-score" style="color:gray">鎖定</div>`;
                 }
                 grid.appendChild(btn);
             });
@@ -348,21 +353,14 @@
                 document.getElementById('level-title').innerText = "📕 錯題挑戰";
             } else {
                 currentLevel = levelNum;
-                // 計算題目範圍
-                // 例如第1關(index 0): 0 ~ 29
-                // 第2關(index 1): 30 ~ 59
                 let startIndex = 0;
-                for (let i = 0; i < levelNum - 1; i++) {
-                    startIndex += LEVEL_CONFIG[i];
-                }
+                for (let i = 0; i < levelNum - 1; i++) { startIndex += LEVEL_CONFIG[i]; }
                 let endIndex = startIndex + LEVEL_CONFIG[levelNum - 1];
                 
-                // 為了防止 allQuestions 還沒載入完或題目不足，做個保護
                 if (allQuestions.length < endIndex) {
-                    alert(`題庫載入中或題目不足 (目前題庫數: ${allQuestions.length})，請稍後再試。`);
+                    alert(`題目載入中或不足，請稍後。`);
                     return;
                 }
-
                 currentQuizQuestions = allQuestions.slice(startIndex, endIndex);
                 document.getElementById('level-title').innerText = `🚩 第 ${levelNum} 關`;
             }
@@ -382,12 +380,10 @@
         function loadQuestion() {
             const currentQuestion = currentQuizQuestions[currentQuestionIndex];
             
-            // 進度條
             let progress = ((currentQuestionIndex) / currentQuizQuestions.length) * 100;
             document.getElementById('progress-bar').style.width = progress + "%";
             document.getElementById('current-q-num').innerText = currentQuestionIndex + 1;
 
-            // 文字與圖片
             document.getElementById('question-text').innerText = currentQuestion.question;
             document.getElementById('explanation').style.display = 'none'; 
             document.getElementById('next-btn').style.display = 'none';
@@ -400,7 +396,6 @@
                 imgElement.style.display = 'none';
             }
 
-            // 選項
             const optionsList = document.getElementById('options-list');
             optionsList.innerHTML = '';
 
@@ -469,14 +464,13 @@
             let progress = getProgress();
             let isPass = finalScore >= 60;
             
-            if(finalScore === 100) comment = "🏆 完美通關！太強了！";
-            else if(finalScore >= 80) comment = "🌟 優秀！繼續保持！";
+            if(finalScore === 100) comment = "🏆 完美通關！";
+            else if(finalScore >= 80) comment = "🌟 優秀！";
             else if(finalScore >= 60) comment = "👍 恭喜及格！";
-            else comment = "💪 加油！60分才能解鎖下一關喔！";
+            else comment = "💪 加油！60分才能解鎖下一關！";
             
             document.getElementById('score-comment').innerText = comment;
 
-            // 判斷解鎖
             let unlockMsg = document.getElementById('unlock-msg');
             if (!isMistakeMode && isPass && currentLevel === progress.maxLevel && currentLevel < LEVEL_CONFIG.length) {
                 unlockMsg.style.display = 'block';
@@ -490,7 +484,8 @@
             renderReviewList('review-list', currentQuizQuestions, userAnswers);
         }
 
-        // --- 錯題本 & 歷史紀錄 (與上一版邏輯相同，略為簡化展示) ---
+        // --- 錯題本與歷史紀錄功能更新 ---
+
         function getMistakeBank() { return JSON.parse(localStorage.getItem('mistakeBank')) || []; }
         function updateMistakeButton() {
             let mistakes = getMistakeBank();
@@ -566,15 +561,31 @@
             list.innerHTML = "";
             if(history.length === 0) list.innerHTML = "<li style='justify-content:center'>暫無紀錄</li>";
             else {
-                history.reverse().slice(0, 20).forEach(rec => {
+                history.reverse().forEach(rec => {
                     let li = document.createElement('li');
                     li.innerHTML = `
-                        <div><strong>${rec.mode}</strong> <br> <span style="color:${rec.score>=60?'#27AE60':'#C0392B'}">${rec.score}分</span> <small style="color:gray">${rec.date}</small></div>
-                        <button class="btn" style="font-size:0.9em; padding:5px 10px;" onclick="replayHistory(${rec.id})">回放</button>
+                        <div class="history-info">
+                            <strong>${rec.mode}</strong> - <span style="color:${rec.score>=60?'#27AE60':'#C0392B'}">${rec.score}分</span>
+                            <br><small style="color:gray">${rec.date}</small>
+                        </div>
+                        <div class="history-actions">
+                            <button class="btn btn-green btn-sm" onclick="replayHistory(${rec.id})">回放</button>
+                            <button class="btn btn-red btn-sm" onclick="deleteHistoryItem(${rec.id})">🗑️</button>
+                        </div>
                     `;
                     list.appendChild(li);
                 });
             }
+        }
+
+        // 新增：個別刪除功能
+        function deleteHistoryItem(id) {
+            if(!confirm("確定要刪除這筆紀錄嗎？")) return;
+            let history = JSON.parse(localStorage.getItem('quizHistory')) || [];
+            // 過濾掉該 id 的紀錄
+            history = history.filter(r => r.id !== id);
+            localStorage.setItem('quizHistory', JSON.stringify(history));
+            showHistory(); // 重新渲染列表
         }
 
         function replayHistory(recordId) {
@@ -589,10 +600,10 @@
             renderReviewList('history-review-list', examQuestions, record.answers);
         }
 
-        function clearHistory() {
-            if(confirm("確定要刪除所有紀錄嗎？(包含關卡進度)")) {
-                localStorage.clear();
-                location.reload();
+        function clearAllHistory() {
+            if(confirm("確定要刪除 *全部* 歷史紀錄嗎？")) {
+                localStorage.removeItem('quizHistory');
+                showHistory();
             }
         }
     </script>
