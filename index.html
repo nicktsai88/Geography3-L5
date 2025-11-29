@@ -239,7 +239,11 @@
                 <img src="images/avatar_girl2.png" class="avatar-option" onclick="selectAvatar('avatar_girl2.png', this)">
             </div>
             <div id="quick-login-area" class="quick-login-area"></div>
-            <br>
+            
+            <div id="daily-reward-msg" style="display:none; background:#fff3cd; padding:10px; margin:10px; border-radius:10px; border:2px solid #ffc107;">
+                📅 每日簽到成功！獲得 50 金幣！💰
+            </div>
+
             <button class="btn" onclick="loginAndStart()">👉 進入關卡地圖</button>
         </div>
 
@@ -290,7 +294,7 @@
                 <h3 id="level-title" style="margin:0;">第 X 關</h3>
                 <div class="header-controls">
                     <button class="btn btn-sm btn-music" onclick="toggleMusic()">⏯️</button>
-                    <button class="btn btn-gray btn-sm" onclick="exitQuiz()">🏠 返回</button>
+                    <button class="btn btn-gray btn-sm" onclick="exitQuiz()">🏠 回到地圖</button>
                 </div>
             </div>
             
@@ -336,9 +340,11 @@
             </p>
             <div id="score-comment" style="font-size: 1.5em; margin-bottom: 20px;"></div>
             <div id="unlock-msg" style="color: var(--correct-color); font-weight: bold; display:none; font-size: 1.5em;">🔓 下一關已解鎖！</div>
+            
             <div id="new-card-alert" style="display:none; background:#e8f8f5; border:2px solid var(--correct-color); border-radius:15px; padding:10px; margin: 10px 0;">
                  <h3 style="margin:5px;">✨ 獲得新卡片！ ✨</h3>
             </div>
+
             <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
                 <button class="btn" onclick="goToLevelScreen()">🗺️ 返回地圖</button>
                 <button class="btn btn-green" onclick="toggleReview()">📝 查看解析</button>
@@ -349,21 +355,30 @@
             </div>
         </div>
 
-        <div id="history-screen" style="display: none;" class="fade-in">
-            <h2>📜 冒險英雄榜</h2> <ul id="history-list"></ul> <div style="margin-top: 20px;"><button class="btn" onclick="goToLevelScreen()">🗺️ 返回</button></div>
+        <div id="passport-modal" class="modal-overlay" onclick="closeModal('passport-modal')">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <button class="modal-close" onclick="closeModal('passport-modal')">×</button>
+                <h2>🛂 我的旅遊護照</h2>
+                <p>收集印章，解鎖冷知識！</p>
+                <div id="passport-grid" class="collection-grid"></div>
+            </div>
         </div>
-        <div id="history-detail-screen" style="display: none;" class="fade-in">
-            <h3>📜 試卷回顧</h3> <ul id="history-review-list" class="review-list"></ul> <button class="btn" onclick="showHistory()">⬅️ 返回</button>
+
+        <div id="funfact-modal" class="modal-overlay" onclick="closeModal('funfact-modal')">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <button class="modal-close" onclick="closeModal('funfact-modal')">×</button>
+                <h3 id="ff-title">💡 冷知識</h3>
+                <div class="fun-fact-card">
+                    <p id="ff-content"></p>
+                </div>
+            </div>
         </div>
-        <div id="collection-screen" style="display: none;" class="fade-in">
-            <h2>🎴 我的圖鑑 (80分獲得)</h2> <div id="collection-grid" class="collection-grid"></div> <div style="text-align:center; margin-top:20px;"><button class="btn" onclick="goToLevelScreen()">🗺️ 返回</button></div>
-        </div>
-        
+
         <div id="shop-modal" class="modal-overlay" onclick="closeModal('shop-modal')">
             <div class="modal-content" onclick="event.stopPropagation()">
                 <button class="modal-close" onclick="closeModal('shop-modal')">×</button>
                 <h2>🏪 道具商店</h2>
-                <p style="font-size:1.2em;">目前金幣：<img src="images/coin.png" width="25" style="vertical-align:middle;"> <span id="shop-user-gold">0</span></p>
+                <p>金幣：💰 <span id="shop-gold-display">0</span></p>
                 
                 <div class="shop-grid" style="margin-bottom:20px;">
                     <div class="shop-item"><img src="images/item_5050.png"><h4>50/50</h4><p>刪去兩錯誤</p><div class="shop-price">💰 50</div><button class="btn btn-sm btn-gold" onclick="buyItem('fifty', 50)">購買</button></div>
@@ -389,18 +404,25 @@
             </div>
         </div>
 
-        <div id="card-modal" class="modal-overlay" onclick="closeModal('card-modal')">
-            <div class="modal-content" onclick="event.stopPropagation()">
-                <button class="modal-close" onclick="closeModal('card-modal')">×</button>
-                <img id="modal-img" class="modal-img" src="">
-                <h3 id="modal-title" style="margin-top:10px;"></h3>
-            </div>
+        <div id="history-screen" style="display:none;" class="fade-in">
+             <h2>📜 歷史紀錄</h2><ul id="history-list"></ul><div style="margin-top:20px;"><button class="btn" onclick="goToLevelScreen()">🗺️ 返回</button></div>
+        </div>
+        <div id="history-detail-screen" style="display: none;" class="fade-in">
+            <h3>📜 試卷回顧</h3> <ul id="history-review-list" class="review-list"></ul> <button class="btn" onclick="showHistory()">⬅️ 返回</button>
         </div>
 
         <div id="reward-overlay" class="modal-overlay" onclick="document.getElementById('reward-overlay').style.display='none'">
             <div class="reward-content" onclick="event.stopPropagation()">
                 <img id="reward-gif" class="reward-gif" src="">
                 <div class="reward-text">🎉 恭喜過關！ 🎉</div>
+            </div>
+        </div>
+        
+        <div id="card-modal" class="modal-overlay" onclick="closeModal('card-modal')">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <button class="modal-close" onclick="closeModal('card-modal')">×</button>
+                <img id="modal-img" class="modal-img" src="">
+                <h3 id="modal-title" style="margin-top:10px;"></h3>
             </div>
         </div>
     </div>
@@ -416,480 +438,261 @@
             { id: 'rich', title: '大富翁', desc: '持有金幣超過 1000', img: 'ach_rich.png' },
             { id: 'survivor', title: '不屈不撓', desc: '在錯題本中答對 5 題', img: 'ach_shield.png' }
         ];
-        
-        // 紀念品列表 (使用 Emoji 製作)
         const SOUVENIRS = [
-            {id: 's01', icon: '⛩️', name: '鳥居'}, {id: 's02', icon: '🏯', name: '城堡'}, {id: 's03', icon: '🗻', name: '富士山'}, // SSR
-            {id: 's04', icon: '🦊', name: '狐狸'}, {id: 's05', icon: '🌸', name: '櫻花'}, {id: 's06', icon: '🎎', name: '人偶'}, // SR
-            {id: 's07', icon: '🍜', name: '拉麵'}, {id: 's08', icon: '🥬', name: '泡菜'}, {id: 's09', icon: '🍱', name: '便當'}, // R
-            {id: 's10', icon: '🍣', name: '壽司'}, {id: 's11', icon: '🍶', name: '清酒'}, {id: 's12', icon: '🥢', name: '筷子'}  // R
+            {id: 's01', icon: '⛩️', name: '鳥居'}, {id: 's02', icon: '🏯', name: '城堡'}, {id: 's03', icon: '🗻', name: '富士山'},
+            {id: 's04', icon: '🦊', name: '狐狸'}, {id: 's05', icon: '🌸', name: '櫻花'}, {id: 's06', icon: '🎎', name: '人偶'},
+            {id: 's07', icon: '🍜', name: '拉麵'}, {id: 's08', icon: '🥬', name: '泡菜'}, {id: 's09', icon: '🍱', name: '便當'},
+            {id: 's10', icon: '🍣', name: '壽司'}, {id: 's11', icon: '🍶', name: '清酒'}, {id: 's12', icon: '🥢', name: '筷子'}
         ];
 
-        let allQuestions = [], currentQuizQuestions = [], currentQuestionIndex = 0, score = 0;
-        let userName = "", currentLevel = 1, userAnswers = {}, isMistakeMode = false;
-        let currentAvatar = "avatar_boy1.png"; 
+        let allQuestions = [], userName = "", currentAvatar = "avatar_boy1.png";
+        let currentLevelIdx = 0, currentQuizData = [], score = 0, timerInterval, timeRemaining = 20, quizStartTime;
         let currentTrackIndex = 0, isPlaying = false;
-        let currentCombo = 0, goldEarnedThisRound = 0, timerInterval, timeRemaining = 20, quizStartTime;
-        
-        // 裝飾模式狀態
-        let isDecorationMode = false;
-        let selectedSouvenir = null;
+        let currentCombo = 0, goldEarnedThisRound = 0;
+        let isMistakeMode = false, userAnswers = {}, currentQuestionIndex = 0, currentLevel = 1;
+        let isDecorationMode = false, selectedSouvenir = null;
 
-        // 音效
-        let audioCorrect = new Audio('sounds/correct.mp3'); audioCorrect.volume = 0.4;
-        let audioFail = new Audio('sounds/fail.mp3'); audioFail.volume = 0.4;
-        let audioBuy = new Audio('sounds/buy.mp3'); audioBuy.volume = 0.6;
-        let audioUse = new Audio('sounds/use.mp3'); audioUse.volume = 0.6;
-        let audioUnlock = new Audio('sounds/unlock.mp3'); audioUnlock.volume = 0.6;
-        let audioCombo = new Audio('sounds/combo.mp3'); audioCombo.volume = 0.5;
-        let audioTimeout = new Audio('sounds/timeout.mp3'); audioTimeout.volume = 0.5;
         const bgmPlayer = document.getElementById('bgm-player');
+        const audioCorrect = new Audio('sounds/correct.mp3'); audioCorrect.volume=0.4;
+        const audioFail = new Audio('sounds/fail.mp3'); audioFail.volume=0.4;
+        const audioWin = new Audio('sounds/unlock.mp3'); audioWin.volume=0.6;
+        const audioBuy = new Audio('sounds/buy.mp3'); audioBuy.volume=0.6;
+        const audioUse = new Audio('sounds/use.mp3'); audioUse.volume=0.6;
+        const audioCombo = new Audio('sounds/combo.mp3'); audioCombo.volume=0.5;
+        const audioTimeout = new Audio('sounds/timeout.mp3'); audioTimeout.volume=0.5;
+        const audioUnlock = new Audio('sounds/unlock.mp3'); audioUnlock.volume=0.6;
         bgmPlayer.volume = 0.3; bgmPlayer.onended = nextTrack;
 
         function playMusic() { if(PLAYLIST.length===0)return; bgmPlayer.src = PLAYLIST[currentTrackIndex]; bgmPlayer.play().then(()=>isPlaying=true).catch(e=>{}); }
         function toggleMusic() { if (bgmPlayer.paused) { if(!bgmPlayer.src) bgmPlayer.src=PLAYLIST[currentTrackIndex]; bgmPlayer.play(); isPlaying=true; } else { bgmPlayer.pause(); isPlaying=false; } }
         function nextTrack() { currentTrackIndex = (currentTrackIndex + 1) % PLAYLIST.length; playMusic(); }
 
-        fetch('questions.json').then(res => res.json()).then(data => { allQuestions = data; renderQuickLogin(); }).catch(e => console.error(e));
+        fetch('questions.json').then(res => res.json()).then(data => { allQuestions = data; renderQuickLogin(); }).catch(e => console.error("題目讀取失敗", e));
 
         function getUserKey(key) { return userName + '_' + key; }
-        function getSavedUsers() { return JSON.parse(localStorage.getItem('savedUsers')) || []; }
-        
         function getUserData() {
-            let data = JSON.parse(localStorage.getItem(getUserKey('userData'))) || {
-                gold: 500, 
-                inventory: { fifty: 0, hint: 0, skip: 0 }, 
-                achievements: [], 
-                maxLevel: 1, 
-                levelScores: {},
-                collectedSouvenirs: [], // 擁有的紀念品 ID 列表
-                decorations: [] // 地圖上的裝飾 {id, icon, x, y}
-            };
-            return data;
+            let defaultData = { gold: 500, maxLevel: 0, levelScores: {}, inventory: { fifty: 2, hint: 2, skip: 2 }, stamps: [], collectedSouvenirs: [], decorations: [], daily: { date: '', tasks: [], claimed: false }, achievements: [] };
+            let stored = JSON.parse(localStorage.getItem(getUserKey('userData'))) || {};
+            return { ...defaultData, ...stored };
         }
-        function saveUserData(data) { localStorage.setItem(getUserKey('userData'), JSON.stringify(data)); updateUIStats(); }
+        function saveUserData(data) { localStorage.setItem(getUserKey('userData'), JSON.stringify(data)); updateUI(); }
 
-        function updateUIStats() {
+        function updateUI() {
             let data = getUserData();
-            if(document.getElementById('user-gold')) document.getElementById('user-gold').innerText = data.gold;
-            if(document.getElementById('shop-user-gold')) document.getElementById('shop-user-gold').innerText = data.gold;
-            
-            let rankImg = "rank_1.png";
-            if(data.maxLevel >= 5) rankImg = "rank_5.png";
-            if(data.maxLevel >= 10) rankImg = "rank_10.png";
-            if(data.maxLevel > 13) rankImg = "rank_max.png";
+            document.querySelectorAll('#user-gold, #shop-gold-display').forEach(el => el.innerText = data.gold);
+            let title = "🎒 背包客"; if (data.maxLevel >= 5) title = "🧭 探險家"; if (data.maxLevel >= 10) title = "🏔️ 領主"; if (data.maxLevel >= 16) title = "👑 地理大師";
+            if(document.getElementById('user-title')) document.getElementById('user-title').innerText = title;
+            let rankImg = "rank_1.png"; if(data.maxLevel >= 5) rankImg="rank_5.png"; if(data.maxLevel >= 10) rankImg="rank_10.png"; if(data.maxLevel > 16) rankImg="rank_max.png";
             if(document.getElementById('rank-icon')) document.getElementById('rank-icon').src = "images/" + rankImg;
-
-            ['fifty', 'hint', 'skip'].forEach(item => {
-                let el = document.getElementById('count-' + item); if(el) el.innerText = data.inventory[item];
-                let btn = document.getElementById('btn-use-' + item); if(btn) btn.disabled = (data.inventory[item] <= 0);
-            });
+            ['fifty', 'hint', 'skip'].forEach(k => { if(document.getElementById('count-'+k)) document.getElementById('count-'+k).innerText = data.inventory[k]; });
         }
 
-        function selectAvatar(filename, element) {
-            currentAvatar = filename;
-            document.querySelectorAll('.avatar-option').forEach(el => el.classList.remove('selected'));
-            element.classList.add('selected');
-        }
         function renderQuickLogin() {
-            let users = getSavedUsers();
-            let container = document.getElementById('quick-login-area');
-            container.innerHTML = "";
-            if(users.length > 0) {
-                container.innerHTML = '<div style="width:100%; text-align:center; color:#666; font-size:0.9em;">快速登入</div>';
-                users.forEach(u => {
-                    let name = typeof u === 'string' ? u : u.name;
-                    let avatar = typeof u === 'string' ? 'avatar_boy1.png' : u.avatar;
-                    let div = document.createElement('div');
-                    div.innerHTML = `<span class="user-tag" onclick="quickLogin('${name}', '${avatar}')"><img src="images/${avatar}" style="width:25px;">${name}<span class="delete-user" onclick="event.stopPropagation(); deleteUser('${name}')">🗑️</span></span>`;
-                    container.appendChild(div);
-                });
+            let users = JSON.parse(localStorage.getItem('savedUsers')) || [];
+            let html = '';
+            users.forEach(u => {
+                let name = u.name || u; let avatar = u.avatar || 'avatar_boy1.png';
+                html += `<div class="user-tag" onclick="login('${name}', '${avatar}')"><img src="images/${avatar}" style="width:20px;border-radius:50%;">${name}</div>`;
+            });
+            document.getElementById('quick-login-area').innerHTML = html;
+        }
+        function selectAvatar(img, el) { currentAvatar = img; document.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected')); el.classList.add('selected'); }
+        function loginAndStart() { let name = document.getElementById('username').value.trim(); if(!name) return alert("請輸入名字"); login(name, currentAvatar); }
+        function login(name, avatar) {
+            userName = name; currentAvatar = avatar;
+            let users = JSON.parse(localStorage.getItem('savedUsers')) || [];
+            users = users.filter(u => (u.name || u) !== name); users.push({name, avatar});
+            localStorage.setItem('savedUsers', JSON.stringify(users));
+            
+            // 每日簽到邏輯
+            let data = getUserData(); let today = new Date().toDateString();
+            if (data.daily.date !== today) {
+                data.daily.date = today; data.daily.claimed = false; 
+                data.gold += 50; document.getElementById('daily-reward-msg').style.display = 'block'; setTimeout(() => document.getElementById('daily-reward-msg').style.display = 'none', 3000);
+                saveUserData(data);
             }
+            
+            showScreen('level-screen'); renderMap(); renderDecorations(); updateUI();
+            if (!isPlaying) playMusic();
         }
-        function quickLogin(name, avatar) {
-            document.getElementById('username').value = name; currentAvatar = avatar; loginAndStart();
-        }
-        function deleteUser(name) {
-            if (!confirm(`確定要刪除「${name}」的所有資料嗎？`)) return;
-            if (!confirm(`⚠️ 警告：刪除後無法復原！`)) return;
-            localStorage.removeItem(name + '_userData'); localStorage.removeItem(name + '_mistakeBank'); localStorage.removeItem(name + '_quizHistory'); localStorage.removeItem(name + '_quizProgress');
-            let users = getSavedUsers().filter(u => (typeof u === 'string' ? u : u.name) !== name);
-            localStorage.setItem('savedUsers', JSON.stringify(users));
-            renderQuickLogin();
-        }
-        function loginAndStart() {
-            const inputName = document.getElementById('username').value.trim();
-            if (!inputName) { alert("請先輸入名字！"); return; }
-            userName = inputName;
-            localStorage.setItem('quizUserName', userName); localStorage.setItem('quizUserAvatar', currentAvatar);
-            let users = getSavedUsers().filter(u => (typeof u === 'string' ? u : u.name) !== userName);
-            users.push({ name: userName, avatar: currentAvatar });
-            localStorage.setItem('savedUsers', JSON.stringify(users));
-            if (!isPlaying) playMusic(); goToLevelScreen();
-        }
+        function logout() { location.reload(); }
+        function exitQuiz() { if(confirm("確定要放棄目前的進度回到探險地圖嗎？")) goToLevelScreen(); }
 
-        function goToLevelScreen() {
-            document.getElementById('display-name').innerText = userName;
-            document.getElementById('user-avatar-display').src = "images/" + currentAvatar;
-            document.querySelectorAll('.quiz-container > div').forEach(el => el.style.display = 'none');
-            document.getElementById('level-screen').style.display = 'block';
-            updateUIStats(); renderLevelMap(); renderDecorations(); updateMistakeButton();
-        }
-
-        function renderLevelMap() {
-            const container = document.getElementById('level-map'); container.innerHTML = '<div id="decoration-overlay" onclick="placeDecorationOnMap(event)"></div>'; // 重置並保留遮罩
-            const data = getUserData();
-            let rows = [];
-            for (let i = 0; i < LEVEL_CONFIG.length; i += ITEMS_PER_ROW) rows.push(LEVEL_CONFIG.slice(i, i + ITEMS_PER_ROW));
-            rows.forEach((rowItems, rowIndex) => {
-                let rowDiv = document.createElement('div'); rowDiv.className = 'level-row';
-                let isReverse = (rowIndex % 2 !== 0); if (isReverse) rowDiv.classList.add('reverse');
-                let startLevelNum = rowIndex * ITEMS_PER_ROW + 1;
-                rowItems.forEach((_, itemIndex) => {
-                    let levelNum = startLevelNum + itemIndex;
-                    let wrapper = document.createElement('div'); wrapper.className = 'level-wrapper';
+        // --- 地圖 ---
+        function renderMap() {
+            let container = document.getElementById('level-map'); container.innerHTML = '<div id="decoration-overlay" onclick="placeDecorationOnMap(event)"></div>';
+            let data = getUserData(); let maxLvl = data.maxLevel;
+            let rows = []; for (let i = 0; i < LEVEL_CONFIG.length; i += ITEMS_PER_ROW) rows.push(LEVEL_CONFIG.slice(i, i + ITEMS_PER_ROW));
+            rows.forEach((rowItems, rIdx) => {
+                let rowDiv = document.createElement('div'); rowDiv.className = 'level-row' + (rIdx % 2 !== 0 ? ' reverse' : '');
+                let startNum = rIdx * ITEMS_PER_ROW;
+                rowItems.forEach((_, idx) => {
+                    let absIdx = startNum + idx;
                     let btn = document.createElement('button'); btn.className = 'level-btn';
-                    if (levelNum <= data.maxLevel) {
-                        let bestScore = data.levelScores[levelNum];
-                        let icon = bestScore >= 80 ? '🚩' : '🏳️';
-                        if (bestScore === 100) icon = '👑'; else if (bestScore >= 90) icon = '⭐';
-                        let scoreText = bestScore !== undefined ? `<div class="level-score">${bestScore}分</div>` : '<div class="level-score">GO!</div>';
-                        btn.innerHTML = `<div class="level-title">${icon} 第 ${levelNum} 關</div>${scoreText}`;
-                        btn.onclick = () => startQuiz('level', levelNum);
-                        if (levelNum === data.maxLevel) {
-                            let avatarImg = document.createElement('img'); avatarImg.src = "images/" + currentAvatar; avatarImg.className = "map-avatar"; wrapper.appendChild(avatarImg);
-                        }
-                    } else {
-                        btn.disabled = true; btn.innerHTML = `<div class="level-title">🔒 第 ${levelNum} 關</div><div class="level-score" style="color:gray">鎖定</div>`;
-                    }
-                    wrapper.appendChild(btn);
-                    if (itemIndex < rowItems.length - 1) {
-                        let arrow = document.createElement('div'); arrow.className = 'arrow-icon';
-                        if (isReverse) { arrow.innerHTML = '➜'; arrow.classList.add('arrow-left'); } else { arrow.innerText = '➜'; arrow.classList.add('arrow-right'); }
-                        wrapper.appendChild(arrow);
-                    }
+                    let label = `第 ${absIdx+1} 關`;
+                    let status = "🔒";
+                    if (absIdx <= maxLvl) {
+                        let score = data.levelScores[absIdx]; status = (score !== undefined) ? (score >= 80 ? "⭐" : "🚩") : "GO!";
+                        btn.onclick = () => enterLevel(absIdx);
+                    } else btn.disabled = true;
+                    btn.innerHTML = `<div class="level-title">${label}</div><div class="level-score">${status}</div>`;
+                    if (absIdx === maxLvl) { let ava = document.createElement('img'); ava.src = "images/" + currentAvatar; ava.className = "map-avatar"; btn.appendChild(ava); }
+                    let wrapper = document.createElement('div'); wrapper.className = 'level-wrapper'; wrapper.appendChild(btn);
+                    if (idx < rowItems.length - 1) { let arrow = document.createElement('div'); arrow.className = 'arrow-icon'; arrow.innerText = '➜'; if(rIdx % 2 !== 0) arrow.style.transform = "scaleX(-1)"; wrapper.appendChild(arrow); }
                     rowDiv.appendChild(wrapper);
                 });
                 container.appendChild(rowDiv);
-                if (rowIndex < rows.length - 1) {
-                    let connectorDiv = document.createElement('div'); connectorDiv.className = 'row-connector';
-                    let downArrow = document.createElement('div'); downArrow.className = 'arrow-icon arrow-down'; downArrow.innerText = '⬇';
-                    if (isReverse) connectorDiv.classList.add('left');
-                    connectorDiv.appendChild(downArrow); container.appendChild(connectorDiv);
-                }
+                if (rIdx < rows.length - 1) { let connectorDiv = document.createElement('div'); connectorDiv.className = 'row-connector'; let downArrow = document.createElement('div'); downArrow.className = 'arrow-icon arrow-down'; downArrow.innerText = '⬇'; if (rIdx % 2 !== 0) connectorDiv.classList.add('left'); connectorDiv.appendChild(downArrow); container.appendChild(connectorDiv); }
             });
-            renderDecorations(); // 確保地圖生成後渲染裝飾
         }
 
-        // --- 扭蛋與裝飾系統 ---
-        function playGacha() {
-            let data = getUserData();
-            if(data.gold < 100) { alert("金幣不足 (需要100)！"); return; }
-            data.gold -= 100; saveUserData(data);
-            audioBuy.play().catch(e=>{});
+        // --- 遊戲邏輯 ---
+        function enterLevel(idx) { currentLevelIdx = idx; startMCQ(idx); }
+        function startMCQ(levelIdx) {
+            let startQ = 0; for(let i=0; i<levelIdx; i++) startQ += MCQ_COUNTS[i];
+            let count = MCQ_COUNTS[levelIdx];
+            currentQuizData = allQuestions.slice(startQ, startQ + count);
+            currentQuestionIndex = 0; score = 0; currentCombo = 0; goldEarnedThisRound = 0; quizStartTime = Date.now();
+            showScreen('quiz-content'); document.getElementById('level-title').innerText = `第 ${levelIdx+1} 關`; document.getElementById('total-q-num').innerText = count;
+            loadQuestion();
+        }
+        function loadQuestion() {
+            let q = currentQuizData[currentQuestionIndex];
+            document.getElementById('current-q-num').innerText = currentQuestionIndex + 1;
+            document.getElementById('question-text').innerText = (currentQuestionIndex + 1) + ". " + q.question;
+            let imgEl = document.getElementById('question-image');
+            if(q.image) { imgEl.src = q.image; imgEl.style.display='block'; } else imgEl.style.display='none';
+            let opts = document.getElementById('options-list'); opts.innerHTML = '';
+            q.options.forEach(opt => { opts.innerHTML += `<button class="option-btn" onclick="checkMCQ(this, '${opt}')">${opt}</button>`; });
+            document.getElementById('explanation').style.display = 'none'; document.getElementById('next-btn').style.display = 'none';
+            resetTimer();
+        }
+        function checkMCQ(btn, ans) {
+            clearInterval(timerInterval);
+            let q = currentQuizData[currentQuestionIndex];
+            let correctCode = q.answer.substring(0,1); let userCode = ans.substring(0,1); if (ans.startsWith('(')) userCode = ans.substring(1,2);
+            document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+            if (userCode === correctCode) { 
+                if(btn) btn.classList.add('correct'); score++; currentCombo++;
+                let earn = 10 + (currentCombo > 1 ? (currentCombo * 2) : 0); goldEarnedThisRound += earn;
+                if(currentCombo > 1) { let el = document.getElementById('combo-display'); el.innerText = `🔥 COMBO x${currentCombo}`; el.style.display='block'; audioCombo.play().catch(()=>{}); }
+                audioCorrect.play(); 
+            } else { 
+                if(btn) btn.classList.add('wrong'); currentCombo=0; audioFail.play(); 
+            }
+            document.getElementById('explanation-text').innerText = q.explanation; document.getElementById('explanation').style.display = 'block'; document.getElementById('next-btn').style.display = 'block';
+        }
+        function nextQuestion() { currentQuestionIndex++; if(currentQuestionIndex < currentQuizData.length) loadQuestion(); else endLevel(true); }
 
-            let anim = document.getElementById('gacha-anim');
-            let result = document.getElementById('gacha-result');
-            anim.style.display = 'block'; result.style.display = 'none';
-            
-            setTimeout(() => {
-                anim.style.display = 'none';
-                // 隨機抽獎
-                let prize = SOUVENIRS[Math.floor(Math.random() * SOUVENIRS.length)];
-                // 加入收藏
-                if(!data.collectedSouvenirs.includes(prize.id)) {
-                    data.collectedSouvenirs.push(prize.id);
-                    saveUserData(data);
-                }
-                result.innerHTML = `獲得：${prize.icon} ${prize.name}！`;
-                result.style.display = 'block';
-                audioUnlock.play().catch(e=>{});
+        function resetTimer() {
+            timeRemaining = 20; document.getElementById('timer-bar').style.width = '100%'; clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeRemaining--; document.getElementById('timer-bar').style.width = (timeRemaining/20*100)+'%';
+                if(timeRemaining<=0) { clearInterval(timerInterval); audioTimeout.play().catch(()=>{}); currentCombo=0; checkMCQ(null, "WRONG"); }
             }, 1000);
         }
 
-        function toggleDecorationMode() {
-            isDecorationMode = !isDecorationMode;
-            let overlay = document.getElementById('decoration-overlay');
-            let toolbar = document.getElementById('decoration-toolbar');
+        // --- 結算 ---
+        function endLevel(isMCQ, isWin=false) {
+            showScreen('score-box');
+            let finalScore = Math.round((score / currentQuizData.length) * 100);
+            document.getElementById('final-score').innerText = finalScore; document.getElementById('final-name').innerText = userName;
+            let earnedGold = goldEarnedThisRound;
+            document.getElementById('earned-gold').innerText = earnedGold;
             
-            if(isDecorationMode) {
-                overlay.style.display = 'block';
-                toolbar.style.display = 'flex';
-                renderSouvenirList();
-            } else {
-                overlay.style.display = 'none';
-                toolbar.style.display = 'none';
-                selectedSouvenir = null;
+            let data = getUserData(); data.gold += earnedGold;
+            let unlockMsg = document.getElementById('unlock-msg'); let newStampAlert = document.getElementById('new-stamp-alert');
+            unlockMsg.style.display='none'; newStampAlert.style.display='none';
+
+            // 及格門檻設定為 80 分
+            if (finalScore >= 80) {
+                if (currentLevelIdx === data.maxLevel && currentLevelIdx < LEVEL_CONFIG.length - 1) { data.maxLevel++; unlockMsg.style.display = 'block'; }
+                if (!data.levelScores[currentLevelIdx] || finalScore > data.levelScores[currentLevelIdx]) data.levelScores[currentLevelIdx] = finalScore;
+                // 獲得圖鑑卡片 (80分)
+                if (!data.stamps.includes(currentLevelIdx)) {
+                    data.stamps.push(currentLevelIdx);
+                    newStampAlert.style.display = 'block';
+                }
+                
+                confetti({ particleCount: 150, spread: 180 }); audioWin.play();
+                let gif = REWARD_GIFS[Math.floor(Math.random()*REWARD_GIFS.length)];
+                document.getElementById('reward-gif').src = "images/" + gif;
+                document.getElementById('reward-overlay').style.display = 'flex';
             }
+            saveUserData(data); checkAchievements(finalScore);
+            saveHistory(userName, finalScore, currentQuizQuestions, userAnswers, isMistakeMode ? "錯題挑戰" : `第 ${currentLevelIdx+1} 關`);
         }
 
+        function checkAchievements(finalScore) {
+            let data = getUserData(); let newUnlock = false;
+            if (finalScore === 100 && !data.achievements.includes('sharpshooter')) { data.achievements.push('sharpshooter'); newUnlock = true; }
+            if (data.gold >= 1000 && !data.achievements.includes('rich')) { data.achievements.push('rich'); newUnlock = true; }
+            if(newUnlock) { saveUserData(data); audioUnlock.play().catch(e=>{}); alert("🎉 解鎖新成就！"); }
+        }
+
+        // --- 裝飾 ---
+        function toggleDecorationMode() {
+            isDecorationMode = !isDecorationMode;
+            document.getElementById('decoration-overlay').style.display = isDecorationMode ? 'block' : 'none';
+            document.getElementById('decoration-toolbar').style.display = isDecorationMode ? 'flex' : 'none';
+            if(isDecorationMode) renderSouvenirList();
+        }
         function renderSouvenirList() {
             let data = getUserData();
-            let list = document.getElementById('souvenir-list');
-            list.innerHTML = "";
+            let list = document.getElementById('souvenir-list'); list.innerHTML = "";
             SOUVENIRS.forEach(item => {
-                let hasItem = data.collectedSouvenirs.includes(item.id);
-                let div = document.createElement('div');
-                div.className = `souvenir-item ${hasItem ? '' : 'locked'}`;
-                div.innerText = item.icon;
-                if(hasItem) {
-                    div.onclick = () => {
-                        selectedSouvenir = item;
-                        document.querySelectorAll('.souvenir-item').forEach(el => el.classList.remove('selected'));
-                        div.classList.add('selected');
-                    };
-                }
+                let has = data.collectedSouvenirs.includes(item.id);
+                let div = document.createElement('div'); div.className = `souvenir-item ${has?'':'locked'}`; div.innerText = item.icon;
+                if(has) div.onclick = () => { selectedSouvenir = item; document.querySelectorAll('.souvenir-item').forEach(e=>e.classList.remove('selected')); div.classList.add('selected'); };
                 list.appendChild(div);
             });
         }
-
         function placeDecorationOnMap(e) {
             if(!selectedSouvenir) return;
             let rect = document.getElementById('level-map').getBoundingClientRect();
-            let x = e.clientX - rect.left;
-            let y = e.clientY - rect.top;
-            
-            // 轉成百分比儲存以適應不同螢幕
-            let xPct = (x / rect.width) * 100;
-            let yPct = (y / rect.height) * 100;
-
-            let data = getUserData();
-            data.decorations.push({ id: Date.now(), icon: selectedSouvenir.icon, x: xPct, y: yPct });
-            saveUserData(data);
-            
-            renderDecorations();
-            audioUse.play().catch(e=>{});
+            let x = (e.clientX - rect.left)/rect.width*100; let y = (e.clientY - rect.top)/rect.height*100;
+            let data = getUserData(); data.decorations.push({id:Date.now(), icon:selectedSouvenir.icon, x, y}); saveUserData(data);
+            renderDecorations(); audioUse.play().catch(()=>{});
         }
-
         function renderDecorations() {
             let data = getUserData();
-            // 清除舊的裝飾 (保留 overlay)
+            document.querySelectorAll('.map-decoration').forEach(e => e.remove());
             let container = document.getElementById('level-map');
-            let oldDecos = document.querySelectorAll('.map-decoration');
-            oldDecos.forEach(el => el.remove());
-
-            data.decorations.forEach(deco => {
-                let el = document.createElement('div');
-                el.className = 'map-decoration';
-                el.innerText = deco.icon;
-                el.style.left = deco.x + '%';
-                el.style.top = deco.y + '%';
-                
-                // 點擊移除 (僅在裝飾模式下)
-                el.onclick = (e) => {
-                    if(isDecorationMode) {
-                        e.stopPropagation(); // 防止觸發新增
-                        if(confirm("要移除這個裝飾嗎？")) {
-                            data.decorations = data.decorations.filter(d => d.id !== deco.id);
-                            saveUserData(data);
-                            renderDecorations();
-                        }
-                    }
-                };
+            data.decorations.forEach(d => {
+                let el = document.createElement('div'); el.className = 'map-decoration'; el.innerText = d.icon;
+                el.style.left = d.x+'%'; el.style.top = d.y+'%';
+                el.onclick = (e) => { if(isDecorationMode) { e.stopPropagation(); if(confirm("移除?")) { data.decorations=data.decorations.filter(x=>x.id!==d.id); saveUserData(data); renderDecorations(); } } };
                 container.appendChild(el);
             });
         }
-
-        // --- 商店與成就 ---
-        function openShop() { document.getElementById('shop-modal').style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        
-        function buyItem(item, cost) {
-            let data = getUserData();
-            if (data.gold >= cost) {
-                data.gold -= cost; data.inventory[item]++; saveUserData(data);
-                audioBuy.play().catch(e=>{}); alert("購買成功！");
-            } else alert("金幣不足！");
-        }
-
-        function openAchievements() {
-            let data = getUserData();
-            let list = document.getElementById('achievement-list'); list.innerHTML = "";
-            ACHIEVEMENTS.forEach(ach => {
-                let isUnlocked = data.achievements.includes(ach.id);
-                let div = document.createElement('div');
-                div.className = `achievement-item ${isUnlocked ? 'unlocked' : ''}`;
-                div.innerHTML = `<img src="images/${ach.img}" class="ach-icon"><div><h4>${ach.title}</h4><p>${ach.desc}</p></div>${isUnlocked?'✅':''}`;
-                list.appendChild(div);
-            });
-            document.getElementById('achievement-modal').style.display = 'flex';
-        }
-
-        function checkAchievements(finalScore, durationSeconds) {
-            let data = getUserData(); let newUnlock = false;
-            if (finalScore === 100 && !data.achievements.includes('sharpshooter')) { data.achievements.push('sharpshooter'); newUnlock = true; }
-            if (finalScore === 100 && durationSeconds < 180 && !data.achievements.includes('speedstar')) { data.achievements.push('speedstar'); newUnlock = true; }
-            if (data.gold >= 1000 && !data.achievements.includes('rich')) { data.achievements.push('rich'); newUnlock = true; }
-            if (isMistakeMode && score >= 5 && !data.achievements.includes('survivor')) { data.achievements.push('survivor'); newUnlock = true; }
-            if(newUnlock) { saveUserData(data); audioUnlock.play().catch(e=>{}); alert("🎉 恭喜！解鎖了新的成就！"); }
-        }
-
-        // --- 測驗流程 ---
-        function startQuiz(mode, levelNum) {
-            isMistakeMode = (mode === 'mistake');
-            userAnswers = {}; score = 0; currentQuestionIndex = 0;
-            currentCombo = 0; goldEarnedThisRound = 0;
-            quizStartTime = Date.now();
-
-            if (isMistakeMode) {
-                let mistakeIds = JSON.parse(localStorage.getItem(getUserKey('mistakeBank'))) || [];
-                currentQuizQuestions = allQuestions.filter(q => mistakeIds.includes(q.id));
-                document.getElementById('level-title').innerText = "📕 錯題挑戰";
-            } else {
-                currentLevel = levelNum;
-                let startIndex = 0; for (let i = 0; i < levelNum - 1; i++) { startIndex += LEVEL_CONFIG[i]; }
-                let endIndex = startIndex + LEVEL_CONFIG[levelNum - 1];
-                currentQuizQuestions = allQuestions.slice(startIndex, endIndex);
-                document.getElementById('level-title').innerText = `🚩 第 ${levelNum} 關`;
-            }
-
-            if (currentQuizQuestions.length === 0) { alert("沒有題目！"); return; }
-            
-            document.querySelectorAll('.quiz-container > div').forEach(el => el.style.display = 'none');
-            document.getElementById('quiz-content').style.display = 'block';
-            document.getElementById('total-q-num').innerText = currentQuizQuestions.length;
-            updateUIStats(); loadQuestion();
-        }
-
-        function loadQuestion() {
-            const currentQuestion = currentQuizQuestions[currentQuestionIndex];
-            document.getElementById('explanation').style.display = 'none';
-            document.getElementById('next-btn').style.display = 'none';
-            document.getElementById('combo-display').style.display = 'none';
-            let qContainer = document.getElementById('question-container');
-            qContainer.classList.remove('fade-in'); void qContainer.offsetWidth; qContainer.classList.add('fade-in');
-
-            document.getElementById('current-q-num').innerText = currentQuestionIndex + 1;
-            document.getElementById('question-text').innerText = currentQuestion.question;
-            
-            const imgElement = document.getElementById('question-image');
-            if (currentQuestion.image) { imgElement.src = currentQuestion.image; imgElement.style.display = 'block'; } else { imgElement.style.display = 'none'; }
-
-            const optionsList = document.getElementById('options-list'); optionsList.innerHTML = '';
-            currentQuestion.options.forEach(option => {
-                const li = document.createElement('li'); const button = document.createElement('button');
-                button.className = 'option-btn'; button.innerText = option;
-                button.onclick = () => checkAnswer(button, option, currentQuestion);
-                li.appendChild(button); optionsList.appendChild(li);
-            });
-            startTimer();
-        }
-
-        function startTimer() {
-            clearInterval(timerInterval); timeRemaining = 20;
-            let bar = document.getElementById('timer-bar');
-            bar.style.transition = 'none'; bar.style.width = '100%';
-            setTimeout(() => { bar.style.transition = 'width 20s linear'; bar.style.width = '0%'; }, 10);
-            timerInterval = setInterval(() => {
-                timeRemaining--;
-                if (timeRemaining <= 0) { clearInterval(timerInterval); handleTimeOut(); }
+        function playGacha() {
+            let data = getUserData(); if(data.gold < 100) { alert("金幣不足"); return; }
+            data.gold -= 100; saveUserData(data); audioBuy.play().catch(()=>{});
+            document.getElementById('gacha-anim').style.display = 'block'; document.getElementById('gacha-result').style.display = 'none';
+            setTimeout(() => {
+                document.getElementById('gacha-anim').style.display = 'none';
+                let prize = SOUVENIRS[Math.floor(Math.random() * SOUVENIRS.length)];
+                if(!data.collectedSouvenirs.includes(prize.id)) { data.collectedSouvenirs.push(prize.id); saveUserData(data); }
+                document.getElementById('gacha-result').innerText = `獲得：${prize.icon} ${prize.name}！`;
+                document.getElementById('gacha-result').style.display = 'block';
+                audioWin.play().catch(()=>{});
             }, 1000);
         }
 
-        function handleTimeOut() {
-            audioTimeout.play().catch(e=>{}); currentCombo = 0;
-            checkAnswer(null, "TIMEOUT", currentQuizQuestions[currentQuestionIndex], true);
+        // --- 輔助 ---
+        function showScreen(id) { document.querySelectorAll('.quiz-container > div').forEach(el => { if(el.id && !el.id.includes('modal')) el.style.display = 'none'; }); document.getElementById(id).style.display = 'block'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function openPassport() { 
+            document.getElementById('collection-screen').style.display = 'block';
+            showCollection(); // 呼叫 v3.x 版的圖鑑函式 (這裡沿用舊版圖鑑UI，但按鈕改名為護照)
         }
-
-        function checkAnswer(btn, selectedOption, questionData, isTimeout = false) {
-            clearInterval(timerInterval);
-            const buttons = document.querySelectorAll('.option-btn'); buttons.forEach(button => button.disabled = true); 
-            let isCorrect = false; const correctCode = questionData.answer.substring(0, 3);
-            if (!isTimeout) {
-                userAnswers[questionData.id] = selectedOption;
-                const selectedCode = selectedOption.substring(0, 3);
-                isCorrect = (selectedCode === correctCode);
-            } else userAnswers[questionData.id] = "超時";
-
-            if (isCorrect) {
-                if(btn) btn.classList.add('correct');
-                score++; currentCombo++;
-                let goldEarn = 10 + (currentCombo > 1 ? (currentCombo * 2) : 0);
-                goldEarnedThisRound += goldEarn;
-                if(currentCombo > 1) {
-                    let comboEl = document.getElementById('combo-display');
-                    comboEl.innerText = `🔥 COMBO x${currentCombo}`; comboEl.style.display = 'block';
-                    audioCombo.play().catch(e=>{});
-                }
-                audioCorrect.play().catch(e=>{});
-                confetti({ particleCount: 30, spread: 40, origin: { y: 0.7 } });
-                if (isMistakeMode) removeFromMistakeBank(questionData.id);
-            } else {
-                if(btn) btn.classList.add('wrong');
-                currentCombo = 0; audioFail.play().catch(e=>{});
-                buttons.forEach(button => { if (button.innerText.substring(0, 3) === correctCode) button.classList.add('correct'); });
-                addToMistakeBank(questionData.id);
-            }
-            document.getElementById('explanation-text').innerText = questionData.explanation || "暫無解析";
-            document.getElementById('explanation').style.display = 'block';
-            document.getElementById('next-btn').style.display = 'block';
-        }
-
-        function nextQuestion() {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < currentQuizQuestions.length) loadQuestion(); else showResult();
-        }
-
-        function usePowerUp(type) {
-            let data = getUserData();
-            if (data.inventory[type] <= 0) return;
-            data.inventory[type]--; saveUserData(data);
-            audioUse.play().catch(e=>{});
-            if (type === 'fifty') {
-                const correctCode = currentQuizQuestions[currentQuestionIndex].answer.substring(0, 3);
-                let wrongs = [];
-                document.querySelectorAll('.option-btn').forEach(btn => { if(!btn.innerText.includes(correctCode)) wrongs.push(btn); });
-                wrongs.sort(() => 0.5 - Math.random()).slice(0, 2).forEach(btn => btn.style.visibility = 'hidden');
-            } else if (type === 'hint') {
-                alert("💡 提示：\n" + (currentQuizQuestions[currentQuestionIndex].explanation || "沒有提示資料..."));
-            } else if (type === 'skip') {
-                clearInterval(timerInterval); nextQuestion();
-            }
-            updateUIStats();
-        }
-
-        function showResult() {
-            let duration = (Date.now() - quizStartTime) / 1000;
+        function showCollection() {
             document.querySelectorAll('.quiz-container > div').forEach(el => el.style.display = 'none');
-            document.getElementById('score-box').style.display = 'block';
-            let finalScore = Math.round((score / currentQuizQuestions.length) * 100);
-            document.getElementById('final-score').innerText = finalScore;
-            document.getElementById('final-name').innerText = userName;
-            document.getElementById('final-gold').innerText = goldEarnedThisRound;
-            let data = getUserData(); data.gold += goldEarnedThisRound;
-            let comment = "", isPass = finalScore >= 80;
-            if(finalScore === 100) comment = "🏆 完美通關！"; else if(finalScore >= 80) comment = "🎉 恭喜過關！"; else comment = "💪 加油！";
-            document.getElementById('score-comment').innerText = comment;
-            let unlockMsg = document.getElementById('unlock-msg');
-            let newCardAlert = document.getElementById('new-card-alert');
-            let gotNewCard = false;
-
-            if (!isMistakeMode && isPass) {
-                if (finalScore >= 80) {
-                    let oldScore = data.levelScores[currentLevel];
-                    if (oldScore === undefined || oldScore < 80) gotNewCard = true;
-                }
-                if (currentLevel === data.maxLevel && currentLevel < LEVEL_CONFIG.length) {
-                    unlockMsg.style.display = 'block'; data.maxLevel++;
-                } else unlockMsg.style.display = 'none';
-                if (!data.levelScores[currentLevel] || finalScore > data.levelScores[currentLevel]) data.levelScores[currentLevel] = finalScore;
-                if(finalScore >= 80) {
-                    let gif = REWARD_GIFS[Math.floor(Math.random()*REWARD_GIFS.length)];
-                    document.getElementById('reward-gif').src = "images/" + gif;
-                    document.getElementById('reward-overlay').style.display = 'flex';
-                }
-                confetti({ particleCount: 200, spread: 150 });
-            } else unlockMsg.style.display = 'none';
-            saveUserData(data); checkAchievements(finalScore, duration);
-            if(gotNewCard) newCardAlert.style.display = 'block'; else newCardAlert.style.display = 'none';
-            saveHistory(userName, finalScore, currentQuizQuestions, userAnswers, isMistakeMode ? "錯題挑戰" : `第 ${currentLevel} 關`);
-            renderReviewList('review-list', currentQuizQuestions, userAnswers);
-        }
-        function showCollection() { document.querySelectorAll('.quiz-container > div').forEach(el => el.style.display = 'none'); document.getElementById('collection-screen').style.display = 'block'; renderCollectionGrid(); }
-        function renderCollectionGrid() {
+            document.getElementById('collection-screen').style.display = 'block';
             const grid = document.getElementById('collection-grid'); grid.innerHTML = ""; const data = getUserData();
             for (let i = 1; i <= LEVEL_CONFIG.length; i++) {
-                let bestScore = data.levelScores[i]; let isUnlocked = (bestScore !== undefined && bestScore >= 80);
+                let bestScore = data.levelScores[i-1]; // 注意索引對齊
+                let isUnlocked = (bestScore !== undefined && bestScore >= 80);
                 let numStr = i < 10 ? `0${i}` : `${i}`; let imgSrc = `images/card_${numStr}.jpg`;
                 let cardItem = document.createElement('div');
                 if (isUnlocked) {
@@ -902,27 +705,14 @@
             }
         }
         function openCardModal(src, title) { document.getElementById('modal-img').src = src; document.getElementById('modal-title').innerText = title; document.getElementById('card-modal').style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function getMistakeBank() { return JSON.parse(localStorage.getItem(getUserKey('mistakeBank'))) || []; }
-        function updateMistakeButton() {
-            let mistakes = getMistakeBank(); let btn = document.getElementById('btn-mistake');
-            if (mistakes.length > 0) { btn.style.display = 'inline-block'; document.getElementById('mistake-count').innerText = mistakes.length; } else btn.style.display = 'none';
-        }
-        function addToMistakeBank(id) { let mistakes = getMistakeBank(); if (!mistakes.includes(id)) { mistakes.push(id); localStorage.setItem(getUserKey('mistakeBank'), JSON.stringify(mistakes)); } }
-        function removeFromMistakeBank(id) { let mistakes = getMistakeBank(); mistakes = mistakes.filter(mId => mId !== id); localStorage.setItem(getUserKey('mistakeBank'), JSON.stringify(mistakes)); }
-        function toggleReview() { let reviewArea = document.getElementById('full-review-area'); reviewArea.style.display = (reviewArea.style.display === 'none') ? 'block' : 'none'; if (reviewArea.style.display === 'block') reviewArea.scrollIntoView({ behavior: 'smooth' }); }
-        function renderReviewList(elementId, questionsData, answersData) {
-            let list = document.getElementById(elementId); list.innerHTML = "";
-            questionsData.forEach((q, index) => {
-                let userAns = answersData[q.id], correctAns = q.answer;
-                let isRight = (userAns && userAns.substring(0,3) === correctAns.substring(0,3));
-                let tagClass = isRight ? "tag-correct" : "tag-wrong", tagText = isRight ? "答對" : "答錯";
-                let html = `<li class="review-item" style="padding:15px; border-radius:10px;"><div style="font-weight:bold; margin-bottom:10px;"><span class="tag ${tagClass}">${tagText}</span> ${index + 1}. ${q.question}</div>`;
-                if (q.image) html += `<img src="${q.image}" style="max-height:150px; display:block; margin:10px 0;">`;
-                html += `<div style="font-size:0.9em; color:#555;">你的答案：${userAns || "未作答"} <br> 正確答案：<span style="color:#27AE60; font-weight:bold;">${correctAns}</span></div><div style="margin-top:5px; background:#f0f0f0; padding:8px; border-radius:5px; font-size:0.9em;">💡 ${q.explanation || "無解析"}</div></li>`;
-                list.innerHTML += html;
-            });
-        }
+        function openShop() { document.getElementById('shop-modal').style.display = 'flex'; document.getElementById('shop-gold-display').innerText = getUserData().gold; }
+        function buyItem(item, cost) { let data = getUserData(); if(data.gold>=cost) { data.gold-=cost; data.inventory[item]++; saveUserData(data); alert("購買成功"); document.getElementById('shop-gold-display').innerText=data.gold; } else alert("金幣不足"); }
+        function usePowerUp(type) { let data = getUserData(); if(data.inventory[type]>0) { data.inventory[type]--; saveUserData(data); if(type==='fifty') { let correct=currentQuizData[currentQuestionIndex].answer[1]; Array.from(document.querySelectorAll('.option-btn')).filter(b=>!b.innerText.includes(correct)).slice(0,2).forEach(b=>b.style.visibility='hidden'); } else if(type==='hint') alert(currentQuizData[currentQuestionIndex].explanation); else if(type==='skip') nextQuestion(); } else alert("道具不足"); updateUI(); }
+        
+        // --- 錯題與歷史 (簡化) ---
+        function goToLevelScreen() { showScreen('level-screen'); renderMap(); updateUI(); renderDecorations(); }
+        
+        // 以下沿用 v4.1 的歷史紀錄相關函式
         function saveHistory(name, score, questionsData, answersData, modeName) {
             let history = JSON.parse(localStorage.getItem(getUserKey('quizHistory'))) || [];
             let record = { id: Date.now(), name: name, score: score, date: new Date().toLocaleString(), mode: modeName, answers: answersData, questionIds: questionsData.map(q => q.id) };
