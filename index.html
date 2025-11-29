@@ -168,18 +168,13 @@
         .card-item:hover { transform: scale(1.05); z-index: 5; }
         .card-img { width: 100%; height: 100%; object-fit: cover; transition: filter 0.3s; }
         
-        /* 鎖定狀態：圖片變灰 + 鎖頭遮罩 */
-        .card-item.locked .card-img {
-            filter: grayscale(80%) opacity(0.6); /* 保持明亮但有區隔 */
-        }
-        .card-item.locked {
-            cursor: default;
-        }
+        /* 鎖定狀態 */
+        .card-item.locked .card-img { filter: grayscale(80%) opacity(0.6); }
+        .card-item.locked { cursor: default; }
         
-        /* 鎖頭遮罩層 */
         .card-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.3); /* 微微白霧感，保持明亮 */
+            background: rgba(255, 255, 255, 0.3);
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
             color: #555; text-align: center;
@@ -422,6 +417,9 @@
 
         fetch('questions.json').then(res => res.json()).then(data => { allQuestions = data; renderQuickLogin(); }).catch(e => console.error(e));
 
+        // --- 資料儲存 Key 產生器 (隔離使用者) ---
+        function getUserKey(key) { return userName + '_' + key; }
+
         function selectAvatar(filename, element) {
             currentAvatar = filename;
             document.querySelectorAll('.avatar-option').forEach(el => el.classList.remove('selected'));
@@ -452,36 +450,48 @@
             });
             loginAndStart();
         }
+        
         function deleteUser(name) {
-            if (!confirm(`確定要刪除「${name}」的登入紀錄嗎？`)) return;
-            if (!confirm(`⚠️ 警告：刪除後無法復原！\n您真的確定要刪除「${name}」嗎？`)) return;
+            if (!confirm(`確定要刪除「${name}」的所有資料嗎？\n(包含登入紀錄、作答歷史、錯題本)`)) return;
+            if (!confirm(`⚠️ 警告：刪除後資料完全消失且無法復原！\n您真的確定要刪除「${name}」嗎？`)) return;
+
+            localStorage.removeItem(name + '_mistakeBank');
+            localStorage.removeItem(name + '_quizHistory');
+            localStorage.removeItem(name + '_quizProgress');
+
             let users = getSavedUsers();
             users = users.filter(u => (typeof u === 'string' ? u : u.name) !== name);
             localStorage.setItem('savedUsers', JSON.stringify(users));
+
             renderQuickLogin();
+            alert(`已完整清除「${name}」的所有資料。`);
         }
+
         function loginAndStart() {
             const inputName = document.getElementById('username').value.trim();
             if (!inputName) { alert("請先輸入名字！"); return; }
             userName = inputName;
             localStorage.setItem('quizUserName', userName);
             localStorage.setItem('quizUserAvatar', currentAvatar);
+
             let users = getSavedUsers();
             users = users.filter(u => (typeof u === 'string' ? u : u.name) !== userName);
             users.push({ name: userName, avatar: currentAvatar });
             localStorage.setItem('savedUsers', JSON.stringify(users));
+
             if (!isPlaying) playMusic();
             goToLevelScreen();
         }
 
-        function getProgress() { return JSON.parse(localStorage.getItem('quizProgress')) || { maxLevel: 1, levelScores: {} }; }
+        function getProgress() { 
+            return JSON.parse(localStorage.getItem(getUserKey('quizProgress'))) || { maxLevel: 1, levelScores: {} }; 
+        }
         
         function saveProgress(level, score) {
             let progress = getProgress();
             if (!progress.levelScores[level] || score > progress.levelScores[level]) progress.levelScores[level] = score;
-            // 門檻：80分才解鎖下一關
             if (score >= 80 && level === progress.maxLevel && level < LEVEL_CONFIG.length) progress.maxLevel++;
-            localStorage.setItem('quizProgress', JSON.stringify(progress));
+            localStorage.setItem(getUserKey('quizProgress'), JSON.stringify(progress));
         }
 
         function goToLevelScreen() {
@@ -507,7 +517,6 @@
                     let btn = document.createElement('button'); btn.className = 'level-btn';
                     if (levelNum <= progress.maxLevel) {
                         let bestScore = progress.levelScores[levelNum];
-                        // 這裡改成 80 分及格圖示
                         let icon = bestScore >= 80 ? '🚩' : '🏳️';
                         if (bestScore === 100) icon = '👑'; else if (bestScore >= 90) icon = '⭐';
                         let scoreText = bestScore !== undefined ? `<div class="level-score">${bestScore}分</div>` : '<div class="level-score">GO!</div>';
@@ -537,13 +546,13 @@
             });
         }
 
-        function logout() { localStorage.removeItem('quizUserName'); location.reload(); }
+        function logout() { location.reload(); }
         function exitQuiz() { if(confirm("確定要放棄目前的進度回到探險地圖嗎？")) goToLevelScreen(); }
 
         function startQuiz(mode, levelNum) {
             isMistakeMode = (mode === 'mistake'); userAnswers = {}; score = 0; currentQuestionIndex = 0;
             if (isMistakeMode) {
-                let mistakeIds = JSON.parse(localStorage.getItem('mistakeBank')) || [];
+                let mistakeIds = JSON.parse(localStorage.getItem(getUserKey('mistakeBank'))) || [];
                 currentQuizQuestions = allQuestions.filter(q => mistakeIds.includes(q.id));
                 document.getElementById('level-title').innerText = "📕 錯題挑戰";
             } else {
@@ -613,7 +622,7 @@
             let finalScore = Math.round((score / currentQuizQuestions.length) * 100);
             document.getElementById('final-score').innerText = finalScore;
             document.getElementById('final-name').innerText = userName;
-            let comment = "", progress = getProgress(), isPass = finalScore >= 80; // 及格門檻 80
+            let comment = "", progress = getProgress(), isPass = finalScore >= 80;
             
             if(finalScore === 100) comment = "🏆 完美通關！太強了！"; 
             else if(finalScore >= 90) comment = "🌟 優秀！繼續保持！"; 
@@ -672,7 +681,6 @@
                     cardItem.onclick = () => openCardModal(imgSrc, `第 ${i} 關獎勵`);
                 } else {
                     cardItem.className = 'card-item locked';
-                    // 鎖定狀態：顯示圖片(CSS有濾鏡) + 遮罩 + 鎖頭
                     cardItem.innerHTML = `
                         <img src="${imgSrc}" class="card-img" onerror="this.style.display='none'">
                         <div class="card-overlay">
@@ -692,7 +700,7 @@
         }
         function closeCardModal() { document.getElementById('card-modal').style.display = 'none'; }
 
-        function getMistakeBank() { return JSON.parse(localStorage.getItem('mistakeBank')) || []; }
+        function getMistakeBank() { return JSON.parse(localStorage.getItem(getUserKey('mistakeBank'))) || []; }
         function updateMistakeButton() {
             let mistakes = getMistakeBank();
             let btn = document.getElementById('btn-mistake');
@@ -701,12 +709,12 @@
         }
         function addToMistakeBank(id) {
             let mistakes = getMistakeBank();
-            if (!mistakes.includes(id)) { mistakes.push(id); localStorage.setItem('mistakeBank', JSON.stringify(mistakes)); }
+            if (!mistakes.includes(id)) { mistakes.push(id); localStorage.setItem(getUserKey('mistakeBank'), JSON.stringify(mistakes)); }
         }
         function removeFromMistakeBank(id) {
             let mistakes = getMistakeBank();
             mistakes = mistakes.filter(mId => mId !== id);
-            localStorage.setItem('mistakeBank', JSON.stringify(mistakes));
+            localStorage.setItem(getUserKey('mistakeBank'), JSON.stringify(mistakes));
         }
         function toggleReview() {
             let reviewArea = document.getElementById('full-review-area');
@@ -726,20 +734,20 @@
             });
         }
         function saveHistory(name, score, questionsData, answersData, modeName) {
-            let history = JSON.parse(localStorage.getItem('quizHistory')) || [];
+            let history = JSON.parse(localStorage.getItem(getUserKey('quizHistory'))) || [];
             let record = { id: Date.now(), name: name, score: score, date: new Date().toLocaleString(), mode: modeName, answers: answersData, questionIds: questionsData.map(q => q.id) };
-            history.push(record); localStorage.setItem('quizHistory', JSON.stringify(history));
+            history.push(record); localStorage.setItem(getUserKey('quizHistory'), JSON.stringify(history));
         }
         function showHistory() {
             document.querySelectorAll('.quiz-container > div').forEach(el => el.style.display = 'none');
             document.getElementById('history-screen').style.display = 'block';
-            let history = JSON.parse(localStorage.getItem('quizHistory')) || [];
+            let history = JSON.parse(localStorage.getItem(getUserKey('quizHistory'))) || [];
             let list = document.getElementById('history-list'); list.innerHTML = "";
             if(history.length === 0) list.innerHTML = "<li style='justify-content:center'>暫無紀錄</li>";
             else {
                 history.reverse().forEach(rec => {
                     let li = document.createElement('li');
-                    li.innerHTML = `<div class="history-info"><strong>${rec.mode}</strong> - <span style="color:${rec.score>=60?'#27AE60':'#C0392B'}">${rec.score}分</span><br><small style="color:gray">${rec.date}</small></div><div class="history-actions"><button class="btn btn-green btn-sm" onclick="replayHistory(${rec.id})">回放</button><button class="btn btn-red btn-sm" onclick="deleteHistoryItem(${rec.id})">🗑️</button></div>`;
+                    li.innerHTML = `<div class="history-info"><strong>${rec.mode}</strong> - <span style="color:${rec.score>=80?'#27AE60':'#C0392B'}">${rec.score}分</span><br><small style="color:gray">${rec.date}</small></div><div class="history-actions"><button class="btn btn-green btn-sm" onclick="replayHistory(${rec.id})">回放</button><button class="btn btn-red btn-sm" onclick="deleteHistoryItem(${rec.id})">🗑️</button></div>`;
                     list.appendChild(li);
                 });
             }
@@ -747,13 +755,13 @@
         function deleteHistoryItem(id) {
             if(!confirm("確定要刪除這筆作答紀錄嗎？")) return;
             if(!confirm("⚠️ 警告：刪除後無法復原！\n您真的確定要刪除嗎？")) return;
-            let history = JSON.parse(localStorage.getItem('quizHistory')) || [];
+            let history = JSON.parse(localStorage.getItem(getUserKey('quizHistory'))) || [];
             history = history.filter(r => r.id !== id);
-            localStorage.setItem('quizHistory', JSON.stringify(history));
+            localStorage.setItem(getUserKey('quizHistory'), JSON.stringify(history));
             showHistory();
         }
         function replayHistory(recordId) {
-            let history = JSON.parse(localStorage.getItem('quizHistory')) || [];
+            let history = JSON.parse(localStorage.getItem(getUserKey('quizHistory'))) || [];
             let record = history.find(r => r.id === recordId);
             if (!record) return;
             document.querySelectorAll('.quiz-container > div').forEach(el => el.style.display = 'none');
@@ -762,12 +770,6 @@
             document.getElementById('history-score').innerText = record.score;
             let examQuestions = allQuestions.filter(q => record.questionIds.includes(q.id));
             renderReviewList('history-review-list', examQuestions, record.answers);
-        }
-        function clearAllHistory() {
-            if(confirm("確定要刪除 *全部* 歷史紀錄嗎？")) {
-                localStorage.removeItem('quizHistory');
-                showHistory();
-            }
         }
     </script>
 </body>
