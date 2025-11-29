@@ -185,6 +185,7 @@
             color: white; text-align: center; font-size: 0.9em; padding: 5px 0;
         }
 
+        /* 彈窗樣式 (通用) */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8); z-index: 2000; display: none;
@@ -200,6 +201,22 @@
             background: var(--wrong-color); color: white; border: none;
             width: 40px; height: 40px; border-radius: 50%; font-size: 1.5em;
             cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        
+        /* 獎勵彈窗特效 */
+        .reward-content {
+            background: transparent; /* 透明背景讓 GIF 更突出 */
+            box-shadow: none;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .reward-gif {
+            max-width: 80vw; max-height: 60vh; border-radius: 20px;
+            border: 5px solid white; box-shadow: 0 0 30px rgba(255,215,0,0.8);
+        }
+        .reward-text {
+            font-size: 2.5em; color: #fff; text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            margin-top: 10px; animation: bounce 1s infinite;
         }
 
         @media (max-width: 600px) {
@@ -393,12 +410,22 @@
                 <h3 id="modal-title" style="margin-top:10px;"></h3>
             </div>
         </div>
+
+        <div id="reward-overlay" class="modal-overlay" onclick="closeReward()">
+            <div class="reward-content" onclick="event.stopPropagation()">
+                <img id="reward-gif" class="reward-gif" src="">
+                <div class="reward-text">🎉 恭喜過關！ 🎉</div>
+                <p style="color: white; text-shadow: 1px 1px 2px black;">(點擊畫面任意處關閉)</p>
+            </div>
+        </div>
     </div>
 
     <script>
         const LEVEL_CONFIG = [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 18];
         const ITEMS_PER_ROW = 4;
         const PLAYLIST = ['sounds/bgm1.mp3', 'sounds/bgm2.mp3', 'sounds/bgm3.mp3'];
+        const REWARD_GIFS = ['reward_01.gif', 'reward_02.gif', 'reward_03.gif'];
+
         let currentTrackIndex = 0;
         let isPlaying = false;
         
@@ -417,7 +444,6 @@
 
         fetch('questions.json').then(res => res.json()).then(data => { allQuestions = data; renderQuickLogin(); }).catch(e => console.error(e));
 
-        // --- 資料儲存 Key 產生器 (隔離使用者) ---
         function getUserKey(key) { return userName + '_' + key; }
 
         function selectAvatar(filename, element) {
@@ -450,7 +476,6 @@
             });
             loginAndStart();
         }
-        
         function deleteUser(name) {
             if (!confirm(`確定要刪除「${name}」的所有資料嗎？\n(包含登入紀錄、作答歷史、錯題本)`)) return;
             if (!confirm(`⚠️ 警告：刪除後資料完全消失且無法復原！\n您真的確定要刪除「${name}」嗎？`)) return;
@@ -462,11 +487,8 @@
             let users = getSavedUsers();
             users = users.filter(u => (typeof u === 'string' ? u : u.name) !== name);
             localStorage.setItem('savedUsers', JSON.stringify(users));
-
             renderQuickLogin();
-            alert(`已完整清除「${name}」的所有資料。`);
         }
-
         function loginAndStart() {
             const inputName = document.getElementById('username').value.trim();
             if (!inputName) { alert("請先輸入名字！"); return; }
@@ -616,6 +638,17 @@
             if (currentQuestionIndex < currentQuizQuestions.length) loadQuestion(); else setTimeout(showResult, 500);
         }
 
+        // --- 動態獎勵功能 ---
+        function showDynamicReward() {
+            const randomGif = REWARD_GIFS[Math.floor(Math.random() * REWARD_GIFS.length)];
+            document.getElementById('reward-gif').src = 'images/' + randomGif;
+            document.getElementById('reward-overlay').style.display = 'flex';
+        }
+        
+        function closeReward() {
+            document.getElementById('reward-overlay').style.display = 'none';
+        }
+
         function showResult() {
             document.getElementById('quiz-content').style.display = 'none';
             document.getElementById('score-box').style.display = 'block';
@@ -640,6 +673,8 @@
                     if (oldScore === undefined || oldScore < 80) {
                         gotNewCard = true;
                     }
+                    // 觸發動態獎勵 GIF
+                    showDynamicReward();
                 }
                 
                 if (currentLevel === progress.maxLevel && currentLevel < LEVEL_CONFIG.length) {
@@ -669,7 +704,6 @@
             const progress = getProgress();
             for (let i = 1; i <= LEVEL_CONFIG.length; i++) {
                 let bestScore = progress.levelScores[i];
-                // 門檻：80分才解鎖
                 let isUnlocked = (bestScore !== undefined && bestScore >= 80);
                 let numStr = i < 10 ? `0${i}` : `${i}`;
                 let imgSrc = `images/card_${numStr}.jpg`;
