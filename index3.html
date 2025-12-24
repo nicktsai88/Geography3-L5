@@ -905,13 +905,7 @@
         function handleWaterfallAnswer(qId, option) {
             if(quizState.locked[qId]) return;
             
-            // 修改：使用寬鬆相等 (==) 以容許字串與數字的 ID 比對
-            const qData = allQuestions.find(q => q.id == qId);
-            if (!qData) {
-                console.error("Question not found:", qId);
-                return;
-            }
-            
+            const qData = allQuestions.find(q => q.id === qId);
             quizState.answers[qId] = option;
             quizState.locked[qId] = true;
             
