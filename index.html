@@ -845,7 +845,8 @@
             list.innerHTML = "";
             
             // Use stored order
-            const questions = allQuestions.filter(q => quizState.qIds.includes(q.id));
+            // 修改點：使用 some + 寬鬆相等 (==) 來避免 id 型別(字串/數字)不一致導致找不到題目的問題
+            const questions = allQuestions.filter(q => quizState.qIds.some(id => id == q.id));
 
             questions.forEach((q, idx) => {
                 const card = document.createElement('div');
