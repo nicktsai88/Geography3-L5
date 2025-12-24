@@ -236,8 +236,15 @@
         .action-icon.active { color: var(--favorite-color); }
         .action-icon.trash:hover { color: var(--wrong-color); }
 
-        /* 修改點：瀑布流題目字體加大至 1.5em */
-        .wf-question-text { font-size: 1.5em; font-weight: bold; margin-bottom: 15px; padding-right: 100px; line-height: 1.5; color: #263238; }
+        /* 修改點：瀑布流題目字體加大至 1.5em，且增加右側內距以避免與按鈕重疊 */
+        .wf-question-text { 
+            font-size: 1.5em; 
+            font-weight: bold; 
+            margin-bottom: 15px; 
+            padding-right: 120px; /* 從 60px 改為 120px，確保容納兩個按鈕 */
+            line-height: 1.5; 
+            color: #263238; 
+        }
         /* 修改點：題號改成紅底白字，並加強顯著性 */
         .wf-q-badge { display: inline-block; background: var(--secondary-color); color: white; padding: 3px 10px; border-radius: 4px; font-size: 0.9em; font-weight: bold; margin-right: 8px; vertical-align: middle; }
         .wf-img { max-width: 100%; max-height: 200px; display: block; margin: 10px 0; border-radius: 8px; border: 1px solid #eee; }
