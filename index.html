@@ -423,26 +423,33 @@
         <button id="next-btn" class="btn" style="display: none; width: 100%; margin-top: 20px;" onclick="nextQuestion()">下一考察站 ➡️</button>
     </div>
 
-    <!-- 瀑布流刷題介面 (Waterfall) -->
-    <div id="waterfall-screen" class="container-box fade-in">
-        <div class="waterfall-header">
-            <div class="waterfall-title">
-                <span id="wf-mode-icon">⚡</span> <span id="wf-mode-title">極速穿越</span>
-            </div>
-            <div class="waterfall-stats">
-                已答: <span id="wf-answered" style="color:var(--primary-color)">0</span> / <span id="wf-total">0</span>
-                &nbsp;|&nbsp; 得分: <span id="wf-score" style="color:var(--correct-color)">0</span>
-            </div>
-            <div style="display:flex; gap: 5px;">
-                <button class="btn btn-orange btn-sm" onclick="restartQuiz()">🔄 重新開始</button>
-                <button class="btn btn-gray btn-sm" onclick="exitQuiz()">🏠 結束</button>
-            </div>
+<!-- 瀑布流刷題介面 (Waterfall) -->
+<div id="waterfall-screen" class="container-box fade-in">
+    <div class="waterfall-header">
+        <div class="waterfall-title">
+            <span id="wf-mode-icon">⚡</span> <span id="wf-mode-title">極速穿越</span>
         </div>
-        
-        <div id="waterfall-list">
-            <!-- 題目卡片將由 JS 生成 -->
+        <div class="waterfall-stats">
+            已答: <span id="wf-answered" style="color:var(--primary-color)">0</span> / <span id="wf-total">0</span>
+            &nbsp;|&nbsp; 得分: <span id="wf-score" style="color:var(--correct-color)">0</span>
+        </div>
+        <div style="display:flex; gap: 5px;">
+            <button class="btn btn-orange btn-sm" onclick="restartQuiz()">🔄 重新開始</button>
+            <button class="btn btn-gray btn-sm" onclick="exitQuiz()">🏠 結束</button>
         </div>
     </div>
+    
+    <div id="waterfall-list">
+        <!-- 題目卡片將由 JS 生成 -->
+        <!-- 插圖示範 -->
+        <img id="question-image" 
+             src="images/sample.jpg" 
+             alt="題目插圖" 
+             style="max-width:100%; max-height:250px; display:block; margin:15px auto; border-radius:5px;">
+    </div>
+</div>
+
+
 
     <!-- 結算畫面 -->
     <div id="score-box" class="container-box fade-in" style="display: none; text-align: center;">
